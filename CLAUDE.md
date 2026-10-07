@@ -465,6 +465,6 @@ h) Línea de ayuda contextual y, debajo, barra de estado con paneles
 - Licencias BSL-1.0 y Unicode-3.0 aprobadas (2026-10-05) para lo que trae
   eframe; anotadas en `tools/licencias.py`.
 - Créditos sin URL pública para SURSHAPE y noisegek-dsp hasta que existan.
-- No crear repositorio git hasta que el usuario lo pida.
+- Repositorio: https://github.com/ahrsml/surshape (rama main, creado a pedido del usuario el 2026-10-07). No se suben `third_party/` (CDP se compila con tools/build_cdp.ps1), `dist/`, `paquetes/` ni la captura de referencia de Soundshaper.
 - Pendiente conocido: la cache no se limpia sola (renders que ya no usa
   ningún nodo quedan en `cache/`); agregar "limpiar cache" más adelante.
