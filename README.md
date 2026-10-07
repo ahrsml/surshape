@@ -11,6 +11,17 @@ Por Adolfo Rosas (@ahrsml). Licencia GPL-3.0-or-later.
 Usa el Rust local (sin tocar PATH ni registro). Si no hay `.\.toolchain`, se
 usa el de NOISEGEK (`..\NOISEGEK\vst\.toolchain`).
 
+SURSHAPE usa el DSP de NOISEGEK (`noisegek-dsp`) desde `..\NOISEGEK\vst\`.
+En un clon nuevo, clona [NOISEGEK](https://github.com/ahrsml/noisegek) en esa
+carpeta, junto a SURSHAPE:
+
+```powershell
+git clone https://github.com/ahrsml/noisegek.git ..\NOISEGEK\vst
+```
+
+Los programas de CDP se compilan con `tools\build_cdp.ps1` (no van en el
+repositorio).
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\ejecutar.ps1        # compila y abre
 powershell -ExecutionPolicy Bypass -File .\build.ps1 -Test     # tests + dist\SURSHAPE.exe
