@@ -1,0 +1,9 @@
+[package]
+name = "surshape-i18n"
+description = "SURSHAPE: textos en español e inglés (archivos clave = texto)"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]

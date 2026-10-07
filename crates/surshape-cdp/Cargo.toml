@@ -1,0 +1,15 @@
+[package]
+name = "surshape-cdp"
+description = "SURSHAPE: wrapper de CDP (Composers Desktop Project) como procesos externos"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+surshape-audio.workspace = true
+surshape-engine.workspace = true
+
+[dev-dependencies]
+surshape-native.workspace = true
+noisegek-dsp.workspace = true

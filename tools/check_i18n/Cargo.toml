@@ -1,0 +1,15 @@
+[package]
+name = "check_i18n"
+description = "SURSHAPE: verificación de traducciones (claves faltantes, huérfanas y literales visibles)"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+surshape-i18n.workspace = true
+surshape-engine.workspace = true
+surshape-native.workspace = true
+surshape-cdp.workspace = true
+serde_json.workspace = true

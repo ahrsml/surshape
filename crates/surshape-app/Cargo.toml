@@ -1,0 +1,29 @@
+[package]
+name = "surshape-app"
+description = "SURSHAPE: aplicación de diseño sonoro offline"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "surshape"
+path = "src/main.rs"
+
+[dependencies]
+surshape-audio.workspace = true
+surshape-engine.workspace = true
+surshape-native.workspace = true
+surshape-cdp.workspace = true
+surshape-i18n.workspace = true
+surshape-session.workspace = true
+surshape-patch.workspace = true
+eframe.workspace = true
+cpal.workspace = true
+rfd.workspace = true
+dirs.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+egui_kittest = "0.31.1"   # MIT/Apache-2.0: tests de layout

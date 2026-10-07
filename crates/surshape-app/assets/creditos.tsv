@@ -1,0 +1,16 @@
+# Componentes de terceros que se muestran en "Acerca de / créditos".
+# Columnas separadas por TAB: nombre, licencia, enlace al código fuente ("-" = sin enlace público aún), clave i18n de la descripción.
+# Mantener en sincronía con THIRD_PARTY.md y licenses/.
+noisegek-dsp	GPL-3.0-or-later	-	creditos.uso.noisegek
+CDP (Composers Desktop Project)	LGPL-2.1	https://github.com/ComposersDesktop/CDP8	creditos.uso.cdp
+egui / eframe	MIT OR Apache-2.0	https://github.com/emilk/egui	creditos.uso.egui
+symphonia	MPL-2.0	https://github.com/pdeljanov/Symphonia	creditos.uso.symphonia
+hound	Apache-2.0	https://github.com/ruuda/hound	creditos.uso.hound
+cpal	Apache-2.0	https://github.com/RustAudio/cpal	creditos.uso.cpal
+RustFFT	MIT OR Apache-2.0	https://github.com/ejmahler/RustFFT	creditos.uso.rustfft
+rfd	MIT	https://github.com/PolyMeilex/rfd	creditos.uso.rfd
+serde / serde_json	MIT OR Apache-2.0	https://github.com/serde-rs/serde	creditos.uso.serde
+dirs	MIT OR Apache-2.0	https://github.com/dirs-dev/dirs-rs	creditos.uso.dirs
+Anton	OFL-1.1	https://github.com/googlefonts/AntonFont	creditos.uso.anton
+IBM Plex Sans	OFL-1.1	https://github.com/IBM/plex	creditos.uso.plex
+Courier Prime	OFL-1.1	https://github.com/quoteunquoteapps/CourierPrime	creditos.uso.courier

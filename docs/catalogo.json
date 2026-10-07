@@ -1,0 +1,2456 @@
+{
+  "families": [
+    "ui.familia.tiempo",
+    "ui.familia.espectral",
+    "ui.familia.tono",
+    "ui.familia.destruccion",
+    "ui.familia.filtro_espacio",
+    "ui.familia.generador",
+    "ui.familia.combinacion",
+    "ui.familia.utilidad"
+  ],
+  "processes": [
+    {
+      "desc_key": "proc.nat.paulstretch.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.tiempo",
+      "id": "nat.paulstretch",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.paulstretch.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 8.0,
+          "desc_key": "param.nat.paulstretch.factor.desc",
+          "key": "param.nat.paulstretch.factor",
+          "kind": "float",
+          "log": true,
+          "max": 10000.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.25,
+          "desc_key": "param.nat.paulstretch.ventana.desc",
+          "key": "param.nat.paulstretch.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 4.0,
+          "min": 0.02,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        }
+      ],
+      "per_channel": false,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.granular.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.tiempo",
+      "id": "nat.granular",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.granular.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 10.0,
+          "desc_key": "param.nat.granular.duracion.desc",
+          "key": "param.nat.granular.duracion",
+          "kind": "float",
+          "log": true,
+          "max": 600.0,
+          "min": 0.5,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 40.0,
+          "desc_key": "param.nat.granular.densidad.desc",
+          "key": "param.nat.granular.densidad",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 80.0,
+          "desc_key": "param.nat.granular.tamano.desc",
+          "key": "param.nat.granular.tamano",
+          "kind": "float",
+          "log": true,
+          "max": 1000.0,
+          "min": 5.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 0.0,
+          "desc_key": "param.nat.granular.posicion.desc",
+          "key": "param.nat.granular.posicion",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.nat.granular.velocidad.desc",
+          "key": "param.nat.granular.velocidad",
+          "kind": "float",
+          "log": false,
+          "max": 4.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 50.0,
+          "desc_key": "param.nat.granular.dispersion.desc",
+          "key": "param.nat.granular.dispersion",
+          "kind": "float",
+          "log": false,
+          "max": 2000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 0.0,
+          "desc_key": "param.nat.granular.transposicion.desc",
+          "key": "param.nat.granular.transposicion",
+          "kind": "float",
+          "log": false,
+          "max": 24.0,
+          "min": -24.0,
+          "options": [],
+          "unit_key": "ui.unidad.st"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 0.0,
+          "desc_key": "param.nat.granular.tono_azar.desc",
+          "key": "param.nat.granular.tono_azar",
+          "kind": "float",
+          "log": false,
+          "max": 24.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.st"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 0.0,
+          "desc_key": "param.nat.granular.envolvente.desc",
+          "key": "param.nat.granular.envolvente",
+          "kind": "choice",
+          "log": false,
+          "max": 3.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.granular.envolvente.hann",
+            "param.nat.granular.envolvente.triangulo",
+            "param.nat.granular.envolvente.trapecio",
+            "param.nat.granular.envolvente.percusiva"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 50.0,
+          "desc_key": "param.nat.granular.estereo.desc",
+          "key": "param.nat.granular.estereo",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": false,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.reverse.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.tiempo",
+      "id": "nat.reverse",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.reverse.nombre",
+      "outputs": 1,
+      "params": [],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.freeze.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.freeze",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.freeze.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 50.0,
+          "desc_key": "param.nat.freeze.posicion.desc",
+          "key": "param.nat.freeze.posicion",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 10.0,
+          "desc_key": "param.nat.freeze.duracion.desc",
+          "key": "param.nat.freeze.duracion",
+          "kind": "float",
+          "log": true,
+          "max": 600.0,
+          "min": 0.5,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 120.0,
+          "desc_key": "param.nat.freeze.ventana.desc",
+          "key": "param.nat.freeze.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 1000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 4.0,
+          "desc_key": "param.nat.freeze.promedio.desc",
+          "key": "param.nat.freeze.promedio",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.spec_blur.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.spec_blur",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.spec_blur.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 46.0,
+          "desc_key": "param.nat.spec_blur.ventana.desc",
+          "key": "param.nat.spec_blur.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 10.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 12.0,
+          "desc_key": "param.nat.spec_blur.cuadros.desc",
+          "key": "param.nat.spec_blur.cuadros",
+          "kind": "int",
+          "log": false,
+          "max": 200.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.spec_blur.fases.desc",
+          "key": "param.nat.spec_blur.fases",
+          "kind": "toggle",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.spec_blur.mezcla.desc",
+          "key": "param.nat.spec_blur.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.spec_gate.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.spec_gate",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.spec_gate.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 46.0,
+          "desc_key": "param.nat.spec_gate.ventana.desc",
+          "key": "param.nat.spec_gate.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 10.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": -30.0,
+          "desc_key": "param.nat.spec_gate.umbral.desc",
+          "key": "param.nat.spec_gate.umbral",
+          "kind": "float",
+          "log": false,
+          "max": 0.0,
+          "min": -80.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 0.0,
+          "desc_key": "param.nat.spec_gate.invertir.desc",
+          "key": "param.nat.spec_gate.invertir",
+          "kind": "toggle",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.spec_gate.mezcla.desc",
+          "key": "param.nat.spec_gate.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.spec_shift.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.spec_shift",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.spec_shift.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 85.0,
+          "desc_key": "param.nat.spec_shift.ventana.desc",
+          "key": "param.nat.spec_shift.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 300.0,
+          "desc_key": "param.nat.spec_shift.hz.desc",
+          "key": "param.nat.spec_shift.hz",
+          "kind": "float",
+          "log": false,
+          "max": 4000.0,
+          "min": -4000.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.spec_shift.mezcla.desc",
+          "key": "param.nat.spec_shift.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.spec_stretch.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.spec_stretch",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.spec_stretch.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 85.0,
+          "desc_key": "param.nat.spec_stretch.ventana.desc",
+          "key": "param.nat.spec_stretch.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 3,
+          "default": 1.5,
+          "desc_key": "param.nat.spec_stretch.factor.desc",
+          "key": "param.nat.spec_stretch.factor",
+          "kind": "float",
+          "log": true,
+          "max": 4.0,
+          "min": 0.25,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.spec_stretch.ancla.desc",
+          "key": "param.nat.spec_stretch.ancla",
+          "kind": "float",
+          "log": true,
+          "max": 5000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.spec_stretch.mezcla.desc",
+          "key": "param.nat.spec_stretch.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.bin_shuffle.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.bin_shuffle",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.bin_shuffle.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 46.0,
+          "desc_key": "param.nat.bin_shuffle.ventana.desc",
+          "key": "param.nat.bin_shuffle.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 10.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 8.0,
+          "desc_key": "param.nat.bin_shuffle.bloque.desc",
+          "key": "param.nat.bin_shuffle.bloque",
+          "kind": "int",
+          "log": false,
+          "max": 128.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 50.0,
+          "desc_key": "param.nat.bin_shuffle.cantidad.desc",
+          "key": "param.nat.bin_shuffle.cantidad",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.bin_shuffle.retener.desc",
+          "key": "param.nat.bin_shuffle.retener",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.bin_shuffle.mezcla.desc",
+          "key": "param.nat.bin_shuffle.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.robotize.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.robotize",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.robotize.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 30.0,
+          "desc_key": "param.nat.robotize.ventana.desc",
+          "key": "param.nat.robotize.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 200.0,
+          "min": 5.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 110.0,
+          "desc_key": "param.nat.robotize.hz.desc",
+          "key": "param.nat.robotize.hz",
+          "kind": "float",
+          "log": true,
+          "max": 800.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.robotize.mezcla.desc",
+          "key": "param.nat.robotize.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.whisperize.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.whisperize",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.whisperize.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 12.0,
+          "desc_key": "param.nat.whisperize.ventana.desc",
+          "key": "param.nat.whisperize.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 100.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.whisperize.mezcla.desc",
+          "key": "param.nat.whisperize.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.cross_synth.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.cross_synth",
+      "inputs": [
+        "ui.entrada.principal",
+        "ui.entrada.modulador"
+      ],
+      "name_key": "proc.nat.cross_synth.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.cross_synth.modo.desc",
+          "key": "param.nat.cross_synth.modo",
+          "kind": "choice",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.cross_synth.modo.amplitudes",
+            "param.nat.cross_synth.modo.envolvente"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.cross_synth.cantidad.desc",
+          "key": "param.nat.cross_synth.cantidad",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 8.0,
+          "desc_key": "param.nat.cross_synth.suavizado.desc",
+          "key": "param.nat.cross_synth.suavizado",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 46.0,
+          "desc_key": "param.nat.cross_synth.ventana.desc",
+          "key": "param.nat.cross_synth.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 10.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.cross_synth.repetir.desc",
+          "key": "param.nat.cross_synth.repetir",
+          "kind": "toggle",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.band_split.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.espectral",
+      "id": "nat.band_split",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.band_split.nombre",
+      "outputs": "varias",
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 3.0,
+          "desc_key": "param.nat.band_split.bandas.desc",
+          "key": "param.nat.band_split.bandas",
+          "kind": "int",
+          "log": false,
+          "max": 8.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 200.0,
+          "desc_key": "param.nat.band_split.frec_min.desc",
+          "key": "param.nat.band_split.frec_min",
+          "kind": "float",
+          "log": true,
+          "max": 2000.0,
+          "min": 30.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 4000.0,
+          "desc_key": "param.nat.band_split.frec_max.desc",
+          "key": "param.nat.band_split.frec_max",
+          "kind": "float",
+          "log": true,
+          "max": 16000.0,
+          "min": 500.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 46.0,
+          "desc_key": "param.nat.band_split.ventana.desc",
+          "key": "param.nat.band_split.ventana",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 10.0,
+          "options": [],
+          "unit_key": "ui.unidad.ms"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.convolve.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.filtro_espacio",
+      "id": "nat.convolve",
+      "inputs": [
+        "ui.entrada.principal",
+        "ui.entrada.ir"
+      ],
+      "name_key": "proc.nat.convolve.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.convolve.normalizar.desc",
+          "key": "param.nat.convolve.normalizar",
+          "kind": "toggle",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.convolve.cola.desc",
+          "key": "param.nat.convolve.cola",
+          "kind": "toggle",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.convolve.mezcla.desc",
+          "key": "param.nat.convolve.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.bitcrush.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.destruccion",
+      "id": "nat.bitcrush",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.bitcrush.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 6.0,
+          "desc_key": "param.nat.bitcrush.bits.desc",
+          "key": "param.nat.bitcrush.bits",
+          "kind": "float",
+          "log": false,
+          "max": 16.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": "ui.unidad.bits"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.bitcrush.reduccion.desc",
+          "key": "param.nat.bitcrush.reduccion",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.bitcrush.mezcla.desc",
+          "key": "param.nat.bitcrush.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.waveshaper.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.destruccion",
+      "id": "nat.waveshaper",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.waveshaper.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 6.0,
+          "desc_key": "param.nat.waveshaper.drive.desc",
+          "key": "param.nat.waveshaper.drive",
+          "kind": "float",
+          "log": false,
+          "max": 36.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.waveshaper.cantidad.desc",
+          "key": "param.nat.waveshaper.cantidad",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 50.0,
+          "desc_key": "param.nat.waveshaper.suavizado.desc",
+          "key": "param.nat.waveshaper.suavizado",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 100.0,
+          "desc_key": "param.nat.waveshaper.mezcla.desc",
+          "key": "param.nat.waveshaper.mezcla",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 0.0,
+          "desc_key": "param.nat.waveshaper.salida.desc",
+          "key": "param.nat.waveshaper.salida",
+          "kind": "float",
+          "log": false,
+          "max": 12.0,
+          "min": -24.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        }
+      ],
+      "per_channel": true,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.nat.normalize.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.normalize",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.normalize.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": -1.0,
+          "desc_key": "param.nat.normalize.pico.desc",
+          "key": "param.nat.normalize.pico",
+          "kind": "float",
+          "log": false,
+          "max": 0.0,
+          "min": -30.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.extraer.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.extraer",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.extraer.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.0,
+          "desc_key": "param.nat.extraer.inicio.desc",
+          "key": "param.nat.extraer.inicio",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 1.0,
+          "desc_key": "param.nat.extraer.fin.desc",
+          "key": "param.nat.extraer.fin",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.quitar.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.quitar",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.quitar.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.0,
+          "desc_key": "param.nat.quitar.inicio.desc",
+          "key": "param.nat.quitar.inicio",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 1.0,
+          "desc_key": "param.nat.quitar.fin.desc",
+          "key": "param.nat.quitar.fin",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.silenciar.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.silenciar",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.silenciar.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.0,
+          "desc_key": "param.nat.silenciar.inicio.desc",
+          "key": "param.nat.silenciar.inicio",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 1.0,
+          "desc_key": "param.nat.silenciar.fin.desc",
+          "key": "param.nat.silenciar.fin",
+          "kind": "float",
+          "log": false,
+          "max": 36000.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.fundido.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.fundido",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.fundido.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.5,
+          "desc_key": "param.nat.fundido.entrada.desc",
+          "key": "param.nat.fundido.entrada",
+          "kind": "float",
+          "log": false,
+          "max": 600.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.5,
+          "desc_key": "param.nat.fundido.salida.desc",
+          "key": "param.nat.fundido.salida",
+          "kind": "float",
+          "log": false,
+          "max": 600.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 2.0,
+          "desc_key": "param.nat.fundido.curva.desc",
+          "key": "param.nat.fundido.curva",
+          "kind": "choice",
+          "log": false,
+          "max": 2.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.fundido.curva.lineal",
+            "param.nat.fundido.curva.exponencial",
+            "param.nat.fundido.curva.coseno"
+          ],
+          "unit_key": null
+        }
+      ],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.polaridad.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.polaridad",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.polaridad.nombre",
+      "outputs": 1,
+      "params": [],
+      "per_channel": false,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.ganancia.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.utilidad",
+      "id": "nat.ganancia",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.nat.ganancia.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 0.0,
+          "desc_key": "param.nat.ganancia.db.desc",
+          "key": "param.nat.ganancia.db",
+          "kind": "float",
+          "log": false,
+          "max": 24.0,
+          "min": -60.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        }
+      ],
+      "per_channel": true,
+      "seed": false
+    },
+    {
+      "desc_key": "proc.nat.noise.desc",
+      "engine": "nativo",
+      "family_key": "ui.familia.generador",
+      "id": "nat.noise",
+      "inputs": [],
+      "name_key": "proc.nat.noise.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.noise.tipo.desc",
+          "key": "param.nat.noise.tipo",
+          "kind": "choice",
+          "log": false,
+          "max": 4.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.noise.tipo.blanco",
+            "param.nat.noise.tipo.rosa",
+            "param.nat.noise.tipo.marron",
+            "param.nat.noise.tipo.polvo",
+            "param.nat.noise.tipo.lfsr"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 10.0,
+          "desc_key": "param.nat.noise.duracion.desc",
+          "key": "param.nat.noise.duracion",
+          "kind": "float",
+          "log": true,
+          "max": 600.0,
+          "min": 0.1,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 50.0,
+          "desc_key": "param.nat.noise.caracter.desc",
+          "key": "param.nat.noise.caracter",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": -6.0,
+          "desc_key": "param.nat.noise.nivel.desc",
+          "key": "param.nat.noise.nivel",
+          "kind": "float",
+          "log": false,
+          "max": 0.0,
+          "min": -48.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.noise.canales.desc",
+          "key": "param.nat.noise.canales",
+          "kind": "choice",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.noise.canales.mono",
+            "param.nat.noise.canales.estereo"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.nat.noise.sr.desc",
+          "key": "param.nat.noise.sr",
+          "kind": "choice",
+          "log": false,
+          "max": 2.0,
+          "min": 0.0,
+          "options": [
+            "param.nat.noise.sr.44100",
+            "param.nat.noise.sr.48000",
+            "param.nat.noise.sr.96000"
+          ],
+          "unit_key": null
+        }
+      ],
+      "per_channel": false,
+      "seed": true
+    },
+    {
+      "desc_key": "proc.cdp.pvoc_anal.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.pvoc_anal",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.pvoc_anal.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 0.0,
+          "desc_key": "param.cdp.pvoc_anal.modo.desc",
+          "key": "param.cdp.pvoc_anal.modo",
+          "kind": "choice",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [
+            "param.cdp.pvoc_anal.modo.1",
+            "param.cdp.pvoc_anal.modo.2"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1024.0,
+          "desc_key": "param.cdp.pvoc_anal.puntos.desc",
+          "key": "param.cdp.pvoc_anal.puntos",
+          "kind": "int",
+          "log": true,
+          "max": 8192.0,
+          "min": 64.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 3.0,
+          "desc_key": "param.cdp.pvoc_anal.superposicion.desc",
+          "key": "param.cdp.pvoc_anal.superposicion",
+          "kind": "int",
+          "log": false,
+          "max": 4.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "pvoc",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.pvoc_synth.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.pvoc_synth",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.pvoc_synth.nombre",
+      "outputs": 1,
+      "params": [],
+      "per_channel": true,
+      "program": "pvoc",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.blur_blur.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.blur_blur",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.blur_blur.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 12.0,
+          "desc_key": "param.cdp.blur_blur.ventanas.desc",
+          "key": "param.cdp.blur_blur.ventanas",
+          "kind": "int",
+          "log": false,
+          "max": 200.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "blur",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.focus_accu.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.focus_accu",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.focus_accu.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.3,
+          "desc_key": "param.cdp.focus_accu.decaimiento.desc",
+          "key": "param.cdp.focus_accu.decaimiento",
+          "kind": "float",
+          "log": true,
+          "max": 1.0,
+          "min": 0.001,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 0.0,
+          "desc_key": "param.cdp.focus_accu.glis.desc",
+          "key": "param.cdp.focus_accu.glis",
+          "kind": "float",
+          "log": false,
+          "max": 4.0,
+          "min": -4.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        }
+      ],
+      "per_channel": true,
+      "program": "focus",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.focus_exag.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.focus_exag",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.focus_exag.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 2.0,
+          "desc_key": "param.cdp.focus_exag.exag.desc",
+          "key": "param.cdp.focus_exag.exag",
+          "kind": "float",
+          "log": true,
+          "max": 100.0,
+          "min": 0.01,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "focus",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.hilite_trace.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.hilite_trace",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.hilite_trace.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 8.0,
+          "desc_key": "param.cdp.hilite_trace.n.desc",
+          "key": "param.cdp.hilite_trace.n",
+          "kind": "int",
+          "log": false,
+          "max": 256.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "hilite",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.stretch_time.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.tiempo",
+      "id": "cdp.stretch_time",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.stretch_time.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 4.0,
+          "desc_key": "param.cdp.stretch_time.factor.desc",
+          "key": "param.cdp.stretch_time.factor",
+          "kind": "float",
+          "log": true,
+          "max": 100.0,
+          "min": 0.25,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        }
+      ],
+      "per_channel": true,
+      "program": "stretch",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.distort_repeat.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.tiempo",
+      "id": "cdp.distort_repeat",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.distort_repeat.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 3.0,
+          "desc_key": "param.cdp.distort_repeat.veces.desc",
+          "key": "param.cdp.distort_repeat.veces",
+          "kind": "int",
+          "log": false,
+          "max": 32.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 1.0,
+          "desc_key": "param.cdp.distort_repeat.ciclos.desc",
+          "key": "param.cdp.distort_repeat.ciclos",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "distort",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.distort_fractal.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.destruccion",
+      "id": "cdp.distort_fractal",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.distort_fractal.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 4.0,
+          "desc_key": "param.cdp.distort_fractal.escala.desc",
+          "key": "param.cdp.distort_fractal.escala",
+          "kind": "int",
+          "log": false,
+          "max": 64.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 0.5,
+          "desc_key": "param.cdp.distort_fractal.nivel.desc",
+          "key": "param.cdp.distort_fractal.nivel",
+          "kind": "float",
+          "log": false,
+          "max": 1.0,
+          "min": 0.01,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "distort",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.extend_zigzag.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.tiempo",
+      "id": "cdp.extend_zigzag",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.extend_zigzag.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 10.0,
+          "desc_key": "param.cdp.extend_zigzag.inicio.desc",
+          "key": "param.cdp.extend_zigzag.inicio",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 90.0,
+          "desc_key": "param.cdp.extend_zigzag.fin.desc",
+          "key": "param.cdp.extend_zigzag.fin",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 2.0,
+          "desc_key": "param.cdp.extend_zigzag.largo.desc",
+          "key": "param.cdp.extend_zigzag.largo",
+          "kind": "float",
+          "log": true,
+          "max": 20.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": false,
+          "decimals": 3,
+          "default": 0.3,
+          "desc_key": "param.cdp.extend_zigzag.minzig.desc",
+          "key": "param.cdp.extend_zigzag.minzig",
+          "kind": "float",
+          "log": true,
+          "max": 5.0,
+          "min": 0.05,
+          "options": [],
+          "unit_key": "ui.unidad.s"
+        }
+      ],
+      "per_channel": true,
+      "program": "extend",
+      "seed": true
+    },
+    {
+      "desc_key": "proc.cdp.combine_cross.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.combinacion",
+      "id": "cdp.combine_cross",
+      "inputs": [
+        "ui.entrada.principal",
+        "ui.entrada.segunda"
+      ],
+      "name_key": "proc.cdp.combine_cross.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.cdp.combine_cross.cantidad.desc",
+          "key": "param.cdp.combine_cross.cantidad",
+          "kind": "float",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "combine",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.morph_morph.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.combinacion",
+      "id": "cdp.morph_morph",
+      "inputs": [
+        "ui.entrada.principal",
+        "ui.entrada.segunda"
+      ],
+      "name_key": "proc.cdp.morph_morph.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 10.0,
+          "desc_key": "param.cdp.morph_morph.amp_inicio.desc",
+          "key": "param.cdp.morph_morph.amp_inicio",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 90.0,
+          "desc_key": "param.cdp.morph_morph.amp_fin.desc",
+          "key": "param.cdp.morph_morph.amp_fin",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 10.0,
+          "desc_key": "param.cdp.morph_morph.frec_inicio.desc",
+          "key": "param.cdp.morph_morph.frec_inicio",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 1,
+          "default": 90.0,
+          "desc_key": "param.cdp.morph_morph.frec_fin.desc",
+          "key": "param.cdp.morph_morph.frec_fin",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.porcentaje"
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.cdp.morph_morph.exp_amp.desc",
+          "key": "param.cdp.morph_morph.exp_amp",
+          "kind": "float",
+          "log": true,
+          "max": 10.0,
+          "min": 0.1,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.cdp.morph_morph.exp_frec.desc",
+          "key": "param.cdp.morph_morph.exp_frec",
+          "kind": "float",
+          "log": true,
+          "max": 10.0,
+          "min": 0.1,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "morph",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.blur_avrg.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.blur_avrg",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.blur_avrg.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 9.0,
+          "desc_key": "param.cdp.blur_avrg.n.desc",
+          "key": "param.cdp.blur_avrg.n",
+          "kind": "int",
+          "log": false,
+          "max": 255.0,
+          "min": 3.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "blur",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.blur_suppress.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.blur_suppress",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.blur_suppress.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 8.0,
+          "desc_key": "param.cdp.blur_suppress.n.desc",
+          "key": "param.cdp.blur_suppress.n",
+          "kind": "int",
+          "log": false,
+          "max": 256.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "blur",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.strange_shift.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.strange_shift",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.strange_shift.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 0.0,
+          "desc_key": "param.cdp.strange_shift.modo.desc",
+          "key": "param.cdp.strange_shift.modo",
+          "kind": "choice",
+          "log": false,
+          "max": 4.0,
+          "min": 0.0,
+          "options": [
+            "param.cdp.strange_shift.modo.1",
+            "param.cdp.strange_shift.modo.2",
+            "param.cdp.strange_shift.modo.3",
+            "param.cdp.strange_shift.modo.4",
+            "param.cdp.strange_shift.modo.5"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 150.0,
+          "desc_key": "param.cdp.strange_shift.desplazamiento.desc",
+          "key": "param.cdp.strange_shift.desplazamiento",
+          "kind": "float",
+          "log": false,
+          "max": 5000.0,
+          "min": -5000.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 1000.0,
+          "desc_key": "param.cdp.strange_shift.division.desc",
+          "key": "param.cdp.strange_shift.division",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 300.0,
+          "desc_key": "param.cdp.strange_shift.desde.desc",
+          "key": "param.cdp.strange_shift.desde",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 3000.0,
+          "desc_key": "param.cdp.strange_shift.hasta.desc",
+          "key": "param.cdp.strange_shift.hasta",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        }
+      ],
+      "per_channel": true,
+      "program": "strange",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.stretch_spectrum.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.stretch_spectrum",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.stretch_spectrum.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 0.0,
+          "desc_key": "param.cdp.stretch_spectrum.modo.desc",
+          "key": "param.cdp.stretch_spectrum.modo",
+          "kind": "choice",
+          "log": false,
+          "max": 1.0,
+          "min": 0.0,
+          "options": [
+            "param.cdp.stretch_spectrum.modo.1",
+            "param.cdp.stretch_spectrum.modo.2"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 500.0,
+          "desc_key": "param.cdp.stretch_spectrum.division.desc",
+          "key": "param.cdp.stretch_spectrum.division",
+          "kind": "float",
+          "log": true,
+          "max": 5000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 1.5,
+          "desc_key": "param.cdp.stretch_spectrum.maximo.desc",
+          "key": "param.cdp.stretch_spectrum.maximo",
+          "kind": "float",
+          "log": true,
+          "max": 4.0,
+          "min": 0.25,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        },
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.cdp.stretch_spectrum.exponente.desc",
+          "key": "param.cdp.stretch_spectrum.exponente",
+          "kind": "float",
+          "log": true,
+          "max": 50.0,
+          "min": 0.02,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 1.0,
+          "desc_key": "param.cdp.stretch_spectrum.profundidad.desc",
+          "key": "param.cdp.stretch_spectrum.profundidad",
+          "kind": "float",
+          "log": false,
+          "max": 1.0,
+          "min": 0.01,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "stretch",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.focus_fold.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.focus_fold",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.focus_fold.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 200.0,
+          "desc_key": "param.cdp.focus_fold.desde.desc",
+          "key": "param.cdp.focus_fold.desde",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 800.0,
+          "desc_key": "param.cdp.focus_fold.hasta.desc",
+          "key": "param.cdp.focus_fold.hasta",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        }
+      ],
+      "per_channel": true,
+      "program": "focus",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.hilite_filter.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.filtro_espacio",
+      "id": "cdp.hilite_filter",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.hilite_filter.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 6.0,
+          "desc_key": "param.cdp.hilite_filter.modo.desc",
+          "key": "param.cdp.hilite_filter.modo",
+          "kind": "choice",
+          "log": false,
+          "max": 11.0,
+          "min": 0.0,
+          "options": [
+            "param.cdp.hilite_filter.modo.1",
+            "param.cdp.hilite_filter.modo.2",
+            "param.cdp.hilite_filter.modo.3",
+            "param.cdp.hilite_filter.modo.4",
+            "param.cdp.hilite_filter.modo.5",
+            "param.cdp.hilite_filter.modo.6",
+            "param.cdp.hilite_filter.modo.7",
+            "param.cdp.hilite_filter.modo.8",
+            "param.cdp.hilite_filter.modo.9",
+            "param.cdp.hilite_filter.modo.10",
+            "param.cdp.hilite_filter.modo.11",
+            "param.cdp.hilite_filter.modo.12"
+          ],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 500.0,
+          "desc_key": "param.cdp.hilite_filter.frec.desc",
+          "key": "param.cdp.hilite_filter.frec",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 2000.0,
+          "desc_key": "param.cdp.hilite_filter.frec2.desc",
+          "key": "param.cdp.hilite_filter.frec2",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": true,
+          "decimals": 1,
+          "default": 10.0,
+          "desc_key": "param.cdp.hilite_filter.q.desc",
+          "key": "param.cdp.hilite_filter.q",
+          "kind": "float",
+          "log": true,
+          "max": 500.0,
+          "min": 1.0,
+          "options": [],
+          "unit_key": null
+        },
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 2.0,
+          "desc_key": "param.cdp.hilite_filter.ganancia.desc",
+          "key": "param.cdp.hilite_filter.ganancia",
+          "kind": "float",
+          "log": true,
+          "max": 100.0,
+          "min": 0.01,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        }
+      ],
+      "per_channel": true,
+      "program": "hilite",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.spec_gain.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.espectral",
+      "id": "cdp.spec_gain",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.spec_gain.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 2,
+          "default": 0.5,
+          "desc_key": "param.cdp.spec_gain.ganancia.desc",
+          "key": "param.cdp.spec_gain.ganancia",
+          "kind": "float",
+          "log": false,
+          "max": 100.0,
+          "min": 0.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        }
+      ],
+      "per_channel": true,
+      "program": "spec",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.distort_average.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.destruccion",
+      "id": "cdp.distort_average",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.distort_average.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": true,
+          "decimals": 0,
+          "default": 4.0,
+          "desc_key": "param.cdp.distort_average.ciclos.desc",
+          "key": "param.cdp.distort_average.ciclos",
+          "kind": "int",
+          "log": false,
+          "max": 128.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": null
+        }
+      ],
+      "per_channel": true,
+      "program": "distort",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.distort_multiply.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.destruccion",
+      "id": "cdp.distort_multiply",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.distort_multiply.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 2.0,
+          "desc_key": "param.cdp.distort_multiply.n.desc",
+          "key": "param.cdp.distort_multiply.n",
+          "kind": "int",
+          "log": false,
+          "max": 16.0,
+          "min": 2.0,
+          "options": [],
+          "unit_key": "ui.unidad.factor"
+        }
+      ],
+      "per_channel": true,
+      "program": "distort",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.modify_speed.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.tono",
+      "id": "cdp.modify_speed",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.modify_speed.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 2,
+          "default": -12.0,
+          "desc_key": "param.cdp.modify_speed.semitonos.desc",
+          "key": "param.cdp.modify_speed.semitonos",
+          "kind": "float",
+          "log": false,
+          "max": 48.0,
+          "min": -48.0,
+          "options": [],
+          "unit_key": "ui.unidad.st"
+        }
+      ],
+      "per_channel": true,
+      "program": "modify",
+      "seed": false
+    },
+    {
+      "desc_key": "proc.cdp.filter_lohi.desc",
+      "engine": "cdp",
+      "family_key": "ui.familia.filtro_espacio",
+      "id": "cdp.filter_lohi",
+      "inputs": [
+        "ui.entrada.principal"
+      ],
+      "name_key": "proc.cdp.filter_lohi.nombre",
+      "outputs": 1,
+      "params": [
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": -60.0,
+          "desc_key": "param.cdp.filter_lohi.atenuacion.desc",
+          "key": "param.cdp.filter_lohi.atenuacion",
+          "kind": "float",
+          "log": false,
+          "max": -6.0,
+          "min": -96.0,
+          "options": [],
+          "unit_key": "ui.unidad.db"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1000.0,
+          "desc_key": "param.cdp.filter_lohi.paso.desc",
+          "key": "param.cdp.filter_lohi.paso",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        },
+        {
+          "automatable": false,
+          "decimals": 0,
+          "default": 1300.0,
+          "desc_key": "param.cdp.filter_lohi.corte.desc",
+          "key": "param.cdp.filter_lohi.corte",
+          "kind": "float",
+          "log": true,
+          "max": 20000.0,
+          "min": 20.0,
+          "options": [],
+          "unit_key": "ui.unidad.hz"
+        }
+      ],
+      "per_channel": true,
+      "program": "filter",
+      "seed": false
+    }
+  ],
+  "version": "0.9.0"
+}

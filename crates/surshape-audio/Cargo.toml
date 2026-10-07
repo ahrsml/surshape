@@ -1,0 +1,11 @@
+[package]
+name = "surshape-audio"
+description = "SURSHAPE: búfer de audio, decodificación, export WAV, análisis y limitador"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+symphonia.workspace = true
+hound.workspace = true

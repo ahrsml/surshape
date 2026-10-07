@@ -1,0 +1,15 @@
+[package]
+name = "surshape-patch"
+description = "SURSHAPE: patch vivo (grafo de nodos, grilla, hash para la cache, plan de render)"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+surshape-engine.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+surshape-native.workspace = true
+serde_json.workspace = true

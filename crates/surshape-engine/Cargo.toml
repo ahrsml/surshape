@@ -1,0 +1,11 @@
+[package]
+name = "surshape-engine"
+description = "SURSHAPE: interfaz común de procesos, render en hilo aparte, validación"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+surshape-audio.workspace = true
+serde.workspace = true
