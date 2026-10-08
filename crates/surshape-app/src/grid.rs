@@ -139,7 +139,7 @@ impl App {
     /// La planilla en `rect` (con sus barras de desplazamiento).
     fn sheet(&mut self, ui: &mut Ui, rect: Rect) {
         let p = ui.painter().clone();
-        p.rect_filled(rect, 0.0, theme::FACE);
+        p.rect_filled(rect, 0.0, theme::t().FACE);
         win32::bevel(&p, rect, Bevel::Sunken);
         let inner = rect.shrink(2.0);
         let view = Rect::from_min_max(inner.min + vec2(HDR_W, HDR_H), inner.max - vec2(SB, SB));
@@ -163,7 +163,7 @@ impl App {
         win32::scrollbar(ui, vbar, true, &mut sy, content.y + HDR_H, view.height() + HDR_H, CELL_H);
         win32::scrollbar(ui, hbar, false, &mut sx, content.x + HDR_W, view.width() + HDR_W, CELL_W);
         let corner = Rect::from_min_max(pos2(vbar.left(), hbar.top()), inner.max);
-        p.rect_filled(corner, 0.0, theme::FACE);
+        p.rect_filled(corner, 0.0, theme::t().FACE);
         sx = sx.clamp(0.0, (content.x - view.width()).max(0.0));
         sy = sy.clamp(0.0, (content.y - view.height()).max(0.0));
         self.grid_scroll = (sx, sy);
@@ -199,23 +199,23 @@ impl App {
         for c in c0..c1 {
             let r = cell_rect(0, c);
             let h = Rect::from_min_max(pos2(r.left(), inner.top()), pos2(r.right(), view.top()));
-            hp.rect_filled(h, 0.0, theme::GRID_HEAD);
+            hp.rect_filled(h, 0.0, theme::t().GRID_HEAD);
             win32::bevel(&hp, h, Bevel::ThinRaised);
             let col_sel = self.cursor_cell.1 == c;
-            hp.text(h.center(), Align2::CENTER_CENTER, format!("{c}"), if col_sel { bold_font(theme::SMALL_SIZE) } else { body_font(theme::SMALL_SIZE) }, theme::TEXT);
+            hp.text(h.center(), Align2::CENTER_CENTER, format!("{c}"), if col_sel { bold_font(theme::SMALL_SIZE) } else { body_font(theme::SMALL_SIZE) }, theme::t().TEXT);
         }
         // Encabezados de fila
         let vp = p.with_clip_rect(Rect::from_min_max(pos2(inner.left(), view.top()), pos2(view.left(), view.bottom())));
         for r in r0..r1 {
             let cr = cell_rect(r, 0);
             let h = Rect::from_min_max(pos2(inner.left(), cr.top()), pos2(view.left(), cr.bottom()));
-            vp.rect_filled(h, 0.0, theme::GRID_HEAD);
+            vp.rect_filled(h, 0.0, theme::t().GRID_HEAD);
             win32::bevel(&vp, h, Bevel::ThinRaised);
             let row_sel = self.cursor_cell.0 == r;
-            vp.text(h.center(), Align2::CENTER_CENTER, row_name(r), if row_sel { bold_font(theme::UI_SIZE) } else { ui_font() }, theme::TEXT);
+            vp.text(h.center(), Align2::CENTER_CENTER, row_name(r), if row_sel { bold_font(theme::UI_SIZE) } else { ui_font() }, theme::t().TEXT);
         }
         let corner_tl = Rect::from_min_max(inner.min, pos2(view.left(), view.top()));
-        p.rect_filled(corner_tl, 0.0, theme::GRID_HEAD);
+        p.rect_filled(corner_tl, 0.0, theme::t().GRID_HEAD);
         win32::bevel(&p, corner_tl, Bevel::ThinRaised);
 
         // Celdas
@@ -237,22 +237,25 @@ impl App {
                 let in_range = self.range_sel.is_some_and(|(rr, a, b)| rr == r && (a.min(b)..=a.max(b)).contains(&c));
                 let is_secondary = matches!(slot, Slot::Node(id) if secondary.contains(&id));
                 let fill = if selected {
-                    theme::HIGHLIGHT
+                    theme::t().HIGHLIGHT
                 } else if in_range || is_secondary {
-                    theme::GRID_MARK
+                    theme::t().GRID_MARK
                 } else if c == 0 {
-                    theme::GRID_COL0
+                    theme::t().GRID_COL0
                 } else if slot == Slot::Empty {
-                    theme::GRID_EMPTY
+                    theme::t().GRID_EMPTY
                 } else {
-                    theme::GRID_CELL
+                    theme::t().GRID_CELL
                 };
                 cp.rect_filled(cr, 0.0, fill);
+                if selected {
+                    cp.rect_stroke(cr.shrink(1.0), 0.0, eframe::egui::Stroke::new(1.0_f32, theme::t().GRID_FOCUS), eframe::egui::StrokeKind::Inside);
+                }
                 // Líneas de la grilla (abajo y derecha).
-                cp.rect_filled(Rect::from_min_max(pos2(cr.left(), cr.bottom() - 1.0), cr.max), 0.0, theme::GRID_LINE);
-                cp.rect_filled(Rect::from_min_max(pos2(cr.right() - 1.0, cr.top()), cr.max), 0.0, theme::GRID_LINE);
-                let ink = if selected { theme::HIGHLIGHT_TEXT } else { theme::TEXT };
-                let muted = if selected { theme::HIGHLIGHT_TEXT } else { theme::TEXT_MUTED };
+                cp.rect_filled(Rect::from_min_max(pos2(cr.left(), cr.bottom() - 1.0), cr.max), 0.0, theme::t().GRID_LINE);
+                cp.rect_filled(Rect::from_min_max(pos2(cr.right() - 1.0, cr.top()), cr.max), 0.0, theme::t().GRID_LINE);
+                let ink = if selected { theme::t().HIGHLIGHT_TEXT } else { theme::t().TEXT };
+                let muted = if selected { theme::t().HIGHLIGHT_TEXT } else { theme::t().TEXT_MUTED };
                 let tp = cp.with_clip_rect(cr.shrink(2.0).intersect(view));
                 let help = match slot {
                     Slot::Empty => {
@@ -287,7 +290,7 @@ impl App {
                         tp.text(pos2(cr.left() + 20.0, ic.y), Align2::LEFT_CENTER, &line2, body_font(theme::SMALL_SIZE), muted);
                         if let CellState::EnProceso(f) = state {
                             let bar = Rect::from_min_size(pos2(cr.left(), cr.bottom() - 3.0), vec2((cr.width() - 1.0) * f, 2.0));
-                            tp.rect_filled(bar, 0.0, theme::ACCENT);
+                            tp.rect_filled(bar, 0.0, theme::t().ACCENT);
                         }
                         let label = format!("{}_{c}", row_name(r));
                         format!("{label} · {name} · {}", tr(state.help_key()))

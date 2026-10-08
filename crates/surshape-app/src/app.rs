@@ -340,6 +340,7 @@ impl App {
     /// Crea la app sobre un contexto de egui. `session`: carpeta de sesión a
     /// abrir (o crear) en lugar de la última (tests y capturas).
     pub fn with_ctx(ctx: &egui::Context, prefs: Prefs, exe_dir: Option<PathBuf>, overrides: Vec<PathBuf>, session: Option<PathBuf>) -> Self {
+        theme::set(prefs.tema);
         theme::apply(ctx);
         let rng = (now_secs() ^ 0x5EED_5EED_1234_5678) | 1;
         if let Some(t) = &prefs.carpeta_temporal {
@@ -1144,6 +1145,10 @@ impl App {
 
     /// Un cuadro completo de la interfaz (lo llama eframe y los tests).
     pub fn frame(&mut self, ctx: &egui::Context) {
+        if self.prefs.tema != theme::kind() {
+            theme::set(self.prefs.tema);
+            theme::apply(ctx);
+        }
         if (self.prefs.zoom - self.zoom_applied).abs() > 0.001 {
             ctx.set_zoom_factor(self.prefs.zoom.clamp(1.0, 2.0));
             self.zoom_applied = self.prefs.zoom;
@@ -1168,7 +1173,7 @@ impl App {
         }
         self.handle_shortcuts(ctx);
 
-        let face = egui::Frame::NONE.fill(theme::FACE);
+        let face = egui::Frame::NONE.fill(theme::t().FACE);
         egui::TopBottomPanel::top("menus") // i18n-ok
             .frame(face.inner_margin(egui::Margin::symmetric(2, 1)))
             .show_separator_line(false)
@@ -1236,14 +1241,14 @@ impl App {
     fn drop_overlay(&self, ctx: &egui::Context) {
         let r = ctx.screen_rect();
         let p = ctx.layer_painter(egui::LayerId::new(egui::Order::Foreground, egui::Id::new("soltar"))); // i18n-ok
-        p.rect_filled(r, 0.0, egui::Color32::from_rgba_unmultiplied(0x0B, 0x4A, 0x78, 90));
+        p.rect_filled(r, 0.0, theme::drop_overlay());
         let font = theme::bold_font(18.0);
         let text = surshape_i18n::tr("ui.sesion.soltar");
-        let g = p.layout_no_wrap(text.to_string(), font, theme::TEXT);
+        let g = p.layout_no_wrap(text.to_string(), font, theme::t().TEXT);
         let br = egui::Rect::from_center_size(r.center(), g.size() + egui::vec2(32.0, 20.0));
-        p.rect_filled(br, 0.0, theme::FACE);
+        p.rect_filled(br, 0.0, theme::t().FACE);
         crate::win32::bevel(&p, br, crate::win32::Bevel::Raised);
-        p.galley(br.center() - g.size() * 0.5, g, theme::TEXT);
+        p.galley(br.center() - g.size() * 0.5, g, theme::t().TEXT);
     }
 }
 

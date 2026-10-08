@@ -654,7 +654,7 @@ dependencies = [
 
 [[package]]
 name = "check_i18n"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "serde_json",
  "surshape-cdp",
@@ -3055,7 +3055,7 @@ checksum = "fe895eb47f22e2ddd4dabc02bce419d2e643c8e3b585c78158b349195bc24d82"
 
 [[package]]
 name = "surshape-app"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "cpal",
  "dirs",
@@ -3075,7 +3075,7 @@ dependencies = [
 
 [[package]]
 name = "surshape-audio"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "hound",
  "symphonia",
@@ -3083,7 +3083,7 @@ dependencies = [
 
 [[package]]
 name = "surshape-cdp"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "noisegek-dsp",
  "surshape-audio",
@@ -3093,7 +3093,7 @@ dependencies = [
 
 [[package]]
 name = "surshape-engine"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "serde",
  "surshape-audio",
@@ -3101,11 +3101,11 @@ dependencies = [
 
 [[package]]
 name = "surshape-i18n"
-version = "0.9.0"
+version = "0.9.1"
 
 [[package]]
 name = "surshape-native"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "noisegek-dsp",
  "rustfft",
@@ -3115,7 +3115,7 @@ dependencies = [
 
 [[package]]
 name = "surshape-patch"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -3125,7 +3125,7 @@ dependencies = [
 
 [[package]]
 name = "surshape-session"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "serde",
  "serde_json",

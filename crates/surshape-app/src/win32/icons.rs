@@ -44,9 +44,9 @@ pub fn paint(p: &Painter, r: Rect, icon: Icon, enabled: bool) {
     let s = r.height().min(r.width()) / 16.0;
     let o = r.center() - vec2(8.0, 8.0) * s;
     let at = |x: f32, y: f32| o + vec2(x, y) * s;
-    let ink = if enabled { theme::TEXT } else { theme::TEXT_DISABLED };
-    let accent = if enabled { theme::pal::ACERO_1 } else { theme::TEXT_DISABLED };
-    let paper = theme::FIELD;
+    let ink = if enabled { theme::t().TEXT } else { theme::t().TEXT_DISABLED };
+    let accent = if enabled { theme::t().ICON_ACCENT } else { theme::t().TEXT_DISABLED };
+    let paper = theme::t().FIELD;
     let w = 1.0 * s.max(1.0);
     match icon {
         Icon::New => {
@@ -55,7 +55,7 @@ pub fn paint(p: &Painter, r: Rect, icon: Icon, enabled: bool) {
             poly(p, vec![at(9.0, 1.0), at(13.0, 5.0), at(9.0, 5.0)], accent);
         }
         Icon::Open => {
-            poly(p, vec![at(1.0, 4.0), at(6.0, 4.0), at(7.0, 6.0), at(14.0, 6.0), at(14.0, 14.0), at(1.0, 14.0)], theme::pal::CIELO_3);
+            poly(p, vec![at(1.0, 4.0), at(6.0, 4.0), at(7.0, 6.0), at(14.0, 6.0), at(14.0, 14.0), at(1.0, 14.0)], theme::t().ICON_FOLDER);
             p.rect_stroke(Rect::from_min_max(at(1.0, 6.0), at(14.0, 14.0)), 0.0, Stroke::new(w, ink), eframe::egui::StrokeKind::Inside);
             poly(p, vec![at(4.0, 9.0), at(15.0, 9.0), at(13.0, 14.0), at(2.0, 14.0)], accent);
         }
@@ -81,14 +81,14 @@ pub fn paint(p: &Painter, r: Rect, icon: Icon, enabled: bool) {
         }
         Icon::Render => {
             // Engranaje simplificado: rueda con flecha.
-            p.circle_filled(at(8.0, 8.0), 6.0 * s, theme::ACCENT);
+            p.circle_filled(at(8.0, 8.0), 6.0 * s, theme::t().ACCENT);
             p.circle_stroke(at(8.0, 8.0), 6.0 * s, Stroke::new(w, ink));
             poly(p, vec![at(6.0, 4.5), at(12.0, 8.0), at(6.0, 11.5)], ink);
         }
         Icon::Cascade => {
             for (i, x) in [1.0, 6.0, 11.0].iter().enumerate() {
                 let y = 2.0 + i as f32 * 4.0;
-                p.rect_filled(Rect::from_min_max(at(*x - 1.0, y), at(*x + 4.0, y + 4.0)), 0.0, theme::ACCENT);
+                p.rect_filled(Rect::from_min_max(at(*x - 1.0, y), at(*x + 4.0, y + 4.0)), 0.0, theme::t().ACCENT);
                 p.rect_stroke(Rect::from_min_max(at(*x - 1.0, y), at(*x + 4.0, y + 4.0)), 0.0, Stroke::new(w, ink), eframe::egui::StrokeKind::Inside);
             }
         }
@@ -121,10 +121,10 @@ pub fn paint(p: &Painter, r: Rect, icon: Icon, enabled: bool) {
             poly(p, vec![at(13.0, 4.0), at(13.0, 9.0), at(9.5, 6.5)], ink);
         }
         Icon::Console => {
-            p.rect_filled(Rect::from_min_max(at(1.0, 2.0), at(15.0, 14.0)), 0.0, theme::VIEW_BG);
-            line(p, at(3.0, 5.0), at(6.0, 8.0), theme::VIEW_TEXT, 1.5 * s);
-            line(p, at(6.0, 8.0), at(3.0, 11.0), theme::VIEW_TEXT, 1.5 * s);
-            line(p, at(8.0, 11.0), at(12.0, 11.0), theme::VIEW_TEXT, 1.5 * s);
+            p.rect_filled(Rect::from_min_max(at(1.0, 2.0), at(15.0, 14.0)), 0.0, theme::t().VIEW_BG);
+            line(p, at(3.0, 5.0), at(6.0, 8.0), theme::t().VIEW_TEXT, 1.5 * s);
+            line(p, at(6.0, 8.0), at(3.0, 11.0), theme::t().VIEW_TEXT, 1.5 * s);
+            line(p, at(8.0, 11.0), at(12.0, 11.0), theme::t().VIEW_TEXT, 1.5 * s);
         }
         Icon::Prefs => {
             for (i, y) in [4.0f32, 8.0, 12.0].iter().enumerate() {

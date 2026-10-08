@@ -43,12 +43,12 @@ impl App {
         win32::audit::record(ui, SECTIONS[i], rect);
         let open = self.prefs.secciones[i];
         let p = ui.painter();
-        p.rect_filled(rect, 0.0, theme::SIDE_HEADS[i]);
+        p.rect_filled(rect, 0.0, theme::t().SIDE_HEADS[i]);
         win32::bevel(p, rect, Bevel::ThinRaised);
-        p.rect_filled(Rect::from_min_size(rect.min + vec2(2.0, 2.0), vec2(4.0, rect.height() - 4.0)), 0.0, theme::DARK);
+        p.rect_filled(Rect::from_min_size(rect.min + vec2(2.0, 2.0), vec2(4.0, rect.height() - 4.0)), 0.0, theme::t().DARK);
         let max_w = rect.width() - 34.0;
         let txt = win32::elide(ui, &tr(SECTIONS[i]).to_uppercase(), &bold_font(theme::UI_SIZE), max_w);
-        p.text(pos2(rect.left() + 10.0, rect.center().y), Align2::LEFT_CENTER, txt, bold_font(theme::UI_SIZE), theme::TEXT);
+        p.text(pos2(rect.left() + 10.0, rect.center().y), Align2::LEFT_CENTER, txt, bold_font(theme::UI_SIZE), theme::t().SIDE_HEAD_TEXT[i]);
         let b = Rect::from_min_size(pos2(rect.right() - 18.0, rect.top() + 2.0), vec2(16.0, 14.0));
         let rb = win32::icon_button(ui, b, ui.id().with(("plegar", i)), if open { Icon::Up } else { Icon::Down }, true); // i18n-ok
         self.hint_key(&resp, "ui.ayuda.seccion");

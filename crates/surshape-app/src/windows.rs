@@ -22,8 +22,8 @@ enum Btn {
 /// Devuelve el botón elegido (la [X] y Esc cuentan como Cancelar).
 fn dialog(ctx: &egui::Context, id: &str, title: &str, width: f32, buttons: &[Btn], add: impl FnOnce(&mut Ui)) -> Option<Btn> {
     let mut out = None;
-    let frame = egui::Frame::NONE.fill(theme::FACE).inner_margin(egui::Margin::same(3));
-    let resp = egui::Modal::new(Id::new(id)).frame(frame).backdrop_color(egui::Color32::from_rgba_unmultiplied(0x16, 0x32, 0x3F, 40)).show(ctx, |ui| {
+    let frame = egui::Frame::NONE.fill(theme::t().FACE).inner_margin(egui::Margin::same(3));
+    let resp = egui::Modal::new(Id::new(id)).frame(frame).backdrop_color(theme::modal_backdrop()).show(ctx, |ui| {
         let max_w = (ctx.screen_rect().width() - 40.0).max(200.0);
         ui.set_width(width.min(max_w));
         win32::title_bar(ui, title, |ui| {
@@ -99,7 +99,7 @@ impl App {
                     if win32::button_w(ui, tr("ui.pagina.copiar"), 70.0, true).clicked() {
                         copy = true;
                     }
-                    win32::sunken(ui, theme::FIELD, |ui| {
+                    win32::sunken(ui, theme::t().FIELD, |ui| {
                         ui.set_width(ui.available_width());
                         win32::mono_selectable(ui, &body);
                     });
@@ -465,6 +465,13 @@ fn prefs_behaviour(ui: &mut Ui, p: &mut Prefs) {
 }
 
 fn prefs_access(ui: &mut Ui, p: &mut Prefs) {
+    win32::group(ui, tr("ui.prefs.tema"), |ui| {
+        for k in crate::theme::ThemeKind::ALL {
+            if win32::radio(ui, p.tema == k, tr(k.key())).clicked() {
+                p.tema = k;
+            }
+        }
+    });
     win32::group(ui, tr("ui.prefs.zoom"), |ui| {
         for z in [1.0f32, 1.25, 1.5] {
             if win32::radio(ui, (p.zoom - z).abs() < 0.01, &format!("{:.0} {}", z * 100.0, tr("ui.unidad.porcentaje"))).clicked() {

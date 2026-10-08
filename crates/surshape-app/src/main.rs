@@ -103,8 +103,8 @@ const APP_ID: &str = "surshape"; // i18n-ok
 /// una onda que se estira en celeste (64 x 64, esquinas rectas).
 fn icon() -> eframe::egui::IconData {
     const N: usize = 64;
-    let bg = theme::pal::ACERO_1;
-    let fg = theme::pal::CELESTE_4;
+    let bg = theme::t().APP_ICON_BG;
+    let fg = theme::t().APP_ICON_FG;
     let mut rgba = Vec::with_capacity(N * N * 4);
     for y in 0..N {
         for x in 0..N {

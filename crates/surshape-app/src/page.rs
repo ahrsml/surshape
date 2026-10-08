@@ -159,7 +159,7 @@ impl App {
                 };
                 ui.horizontal(|ui| {
                     win32::bold(ui, &format!("{}. {}", i + 1, tr(&name_key(pid))));
-                    win32::label(ui, egui::RichText::new(desc).font(mono_font(theme::MONO_SIZE)).color(theme::TEXT_MUTED));
+                    win32::label(ui, egui::RichText::new(desc).font(mono_font(theme::MONO_SIZE)).color(theme::t().TEXT_MUTED));
                 });
             }
             let b = win32::button_w(ui, tr("ui.menu.subpatch_abrir"), 140.0, true);
@@ -429,7 +429,7 @@ impl App {
         });
         cell(ui, COLS[1], |ui| {
             let cdp = if spec.cdp.is_empty() { "—" } else { spec.cdp }; // i18n-ok
-            win32::label(ui, egui::RichText::new(cdp).font(mono_font(theme::MONO_SIZE)).color(theme::TEXT_MUTED));
+            win32::label(ui, egui::RichText::new(cdp).font(mono_font(theme::MONO_SIZE)).color(theme::t().TEXT_MUTED));
         });
         let envelope = matches!(values.value(spec.id), Some(ParamValue::Envelope(_)));
         let mut v = values.get(spec.id);
@@ -647,7 +647,7 @@ impl App {
                 }
                 win32::muted(ui, tr("ui.pagina.comando_nota"));
             });
-            win32::sunken(ui, theme::FIELD, |ui| {
+            win32::sunken(ui, theme::t().FIELD, |ui| {
                 ui.set_width(ui.available_width());
                 let r = win32::mono_selectable(ui, &text);
                 self.hint_key(&r, "ui.ayuda.comando");
@@ -661,7 +661,7 @@ impl App {
         let node = self.session.as_ref().and_then(|s| s.patch.node(id)).cloned();
         ui.horizontal(|ui| {
             let (r, _) = ui.allocate_exact_size(vec2(14.0, 14.0), Sense::hover());
-            crate::widgets::paint_state_icon(ui.painter(), r.center(), 12.0, state, theme::TEXT);
+            crate::widgets::paint_state_icon(ui.painter(), r.center(), 12.0, state, theme::t().TEXT);
             let label = match state {
                 CellState::EnProceso(f) => t!("ui.celda.en_proceso", porcentaje = format!("{:.0}", f * 100.0)),
                 st => t!(st.key()).to_string(),

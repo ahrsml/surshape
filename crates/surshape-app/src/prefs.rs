@@ -97,6 +97,8 @@ pub struct Prefs {
     pub volver_tras_render: bool,
     /// Zoom de la interfaz (1.0, 1.25, 1.5): accesibilidad.
     pub zoom: f32,
+    /// Tema de color: Crepúsculo (por defecto) o Claro (clásico).
+    pub tema: crate::theme::ThemeKind,
     /// Editor externo de sonido (p. ej. Audacity).
     pub editor_externo: Option<PathBuf>,
     /// Tamaños de los paneles (se recuerdan).
@@ -125,6 +127,7 @@ impl Default for Prefs {
             unidades: TimeUnit::Segundos,
             volver_tras_render: true,
             zoom: 1.0,
+            tema: crate::theme::ThemeKind::Crepusculo,
             editor_externo: None,
             ancho_lateral: 230.0,
             alto_visor: 250.0,

@@ -80,7 +80,7 @@ impl App {
                         if r.clicked() {
                             self.console_sel = Some(e.n);
                         }
-                        let c = if selected { theme::TEXT } else { theme::TEXT_MUTED };
+                        let c = if selected { theme::t().TEXT } else { theme::t().TEXT_MUTED };
                         let f = mono_font(theme::MONO_SIZE);
                         ui.label(egui::RichText::new(hms(e.when)).font(f.clone()).color(c));
                         ui.label(egui::RichText::new(&e.cell).font(f.clone()));
@@ -91,7 +91,7 @@ impl App {
                             (None, true) => t!("ui.consola.nativo").to_string(),
                             (None, false) => t!("ui.consola.no_lanzado").to_string(),
                         };
-                        ui.label(egui::RichText::new(code).color(if e.ok { theme::TEXT } else { theme::ERROR }));
+                        ui.label(if e.ok { egui::RichText::new(code).color(theme::t().TEXT) } else { win32::Level::Error.rich(code) });
                         ui.label(egui::RichText::new(format!("{:.2} {}", e.secs, tr("ui.unidad.s"))).font(f.clone()));
                         ui.label(egui::RichText::new(&e.files).font(f));
                         ui.end_row();
@@ -102,7 +102,7 @@ impl App {
         if let Some(e) = sel.and_then(|n| entries.iter().find(|e| e.n == n)) {
             win32::group(ui, &t!("ui.consola.salida", n = e.n), |ui| {
                 egui::ScrollArea::both().id_salt("consola_salida").auto_shrink([false, false]).show(ui, |ui| { // i18n-ok
-                    win32::sunken(ui, theme::FIELD, |ui| {
+                    win32::sunken(ui, theme::t().FIELD, |ui| {
                         ui.set_width(ui.available_width());
                         let txt = if e.output.is_empty() { format!("$ {}", e.command) } else { format!("$ {}\n{}", e.command, e.output) };
                         win32::mono_selectable(ui, &txt);

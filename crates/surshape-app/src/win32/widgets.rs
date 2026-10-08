@@ -25,13 +25,13 @@ pub fn button_w(ui: &mut Ui, text: &str, min_w: f32, enabled: bool) -> Response 
     audit::record_in(ui, bound, text, rect);
     if ui.is_rect_visible(rect) {
         let p = ui.painter();
-        p.rect_filled(rect, 0.0, theme::FACE);
+        p.rect_filled(rect, 0.0, theme::t().FACE);
         let down = enabled && resp.is_pointer_button_down_on();
         bevel(p, rect, if down { Bevel::Pressed } else { Bevel::Raised });
         let c = rect.center() + if down { vec2(1.0, 1.0) } else { vec2(0.0, 0.0) };
         let clip = p.with_clip_rect(rect.shrink(2.0));
         if enabled {
-            clip.text(c, Align2::CENTER_CENTER, text, font, theme::TEXT);
+            clip.text(c, Align2::CENTER_CENTER, text, font, theme::t().TEXT);
         } else {
             disabled_text(&clip, c, Align2::CENTER_CENTER, text, font);
         }
@@ -52,13 +52,13 @@ pub fn accent_button(ui: &mut Ui, text: &str, min_w: f32, enabled: bool) -> Resp
     audit::record_in(ui, bound, text, rect);
     let p = ui.painter();
     let down = enabled && resp.is_pointer_button_down_on();
-    p.rect_filled(rect, 0.0, if enabled { theme::ACCENT } else { theme::FACE });
+    p.rect_filled(rect, 0.0, if enabled { theme::t().ACCENT } else { theme::t().FACE });
     // Borde oscuro exterior: botón por defecto de un diálogo.
-    p.rect_stroke(rect, 0.0, egui::Stroke::new(1.0_f32, theme::DARK), egui::StrokeKind::Inside);
+    p.rect_stroke(rect, 0.0, egui::Stroke::new(1.0_f32, theme::t().DARK), egui::StrokeKind::Inside);
     bevel(p, rect.shrink(1.0), if down { Bevel::Pressed } else { Bevel::Raised });
     let c = rect.center() + if down { vec2(1.0, 1.0) } else { vec2(0.0, 0.0) };
     if enabled {
-        p.text(c, Align2::CENTER_CENTER, text, font, theme::TEXT);
+        p.text(c, Align2::CENTER_CENTER, text, font, theme::t().TEXT);
     } else {
         disabled_text(p, c, Align2::CENTER_CENTER, text, font);
     }
@@ -79,7 +79,7 @@ pub fn tool_button(ui: &mut Ui, icon: Icon, tooltip: &str, enabled: bool, active
     let down = enabled && resp.is_pointer_button_down_on();
     if active {
         // Patrón de botón "encendido": cara aclarada.
-        p.rect_filled(rect, 0.0, theme::pal::TURQUESA_4);
+        p.rect_filled(rect, 0.0, theme::t().BUTTON_ON);
     }
     if down || active {
         bevel(p, rect, Bevel::ThinSunken);
@@ -95,7 +95,7 @@ pub fn tool_button(ui: &mut Ui, icon: Icon, tooltip: &str, enabled: bool, active
 pub fn icon_button(ui: &mut Ui, rect: Rect, id: Id, icon: Icon, enabled: bool) -> Response {
     let resp = ui.interact(rect, id, if enabled { Sense::click_and_drag() } else { Sense::hover() });
     let p = ui.painter();
-    p.rect_filled(rect, 0.0, theme::FACE);
+    p.rect_filled(rect, 0.0, theme::t().FACE);
     let down = enabled && resp.is_pointer_button_down_on();
     bevel(p, rect, if down { Bevel::Pressed } else { Bevel::Raised });
     let s = (rect.height().min(rect.width()) - 2.0).clamp(6.0, 16.0);
@@ -135,13 +135,9 @@ pub fn label(ui: &mut Ui, text: impl Into<WidgetText>) -> Response {
     r
 }
 
-pub fn label_color(ui: &mut Ui, text: &str, color: Color32) -> Response {
-    label(ui, RichText::new(text).color(color))
-}
-
 /// Texto secundario.
 pub fn muted(ui: &mut Ui, text: &str) -> Response {
-    label(ui, RichText::new(text).color(theme::TEXT_MUTED))
+    label(ui, RichText::new(text).color(theme::t().TEXT_MUTED))
 }
 
 /// Negrita.
@@ -192,7 +188,7 @@ pub fn checkbox_en(ui: &mut Ui, on: &mut bool, text: &str, enabled: bool) -> Res
     }
     let p = ui.painter();
     let b = Rect::from_min_size(pos2(rect.left(), rect.center().y - 6.5), vec2(13.0, 13.0));
-    p.rect_filled(b, 0.0, if enabled { theme::FIELD } else { theme::FACE });
+    p.rect_filled(b, 0.0, if enabled { theme::t().FIELD } else { theme::t().FACE });
     bevel(p, b, Bevel::Sunken);
     if *on {
         icons::paint(p, b.shrink(1.5), Icon::Check, enabled);
@@ -201,7 +197,7 @@ pub fn checkbox_en(ui: &mut Ui, on: &mut bool, text: &str, enabled: bool) -> Res
         let clip = p.with_clip_rect(rect);
         let pos = pos2(b.right() + 5.0, rect.center().y);
         if enabled {
-            clip.text(pos, Align2::LEFT_CENTER, text, font.clone(), theme::TEXT);
+            clip.text(pos, Align2::LEFT_CENTER, text, font.clone(), theme::t().TEXT);
         } else {
             disabled_text(&clip, pos, Align2::LEFT_CENTER, text, font.clone());
         }
@@ -226,7 +222,7 @@ pub fn radio(ui: &mut Ui, selected: bool, text: &str) -> Response {
     let p = ui.painter();
     let c = pos2(rect.left() + 6.5, rect.center().y);
     // Círculo hundido: media luna oscura arriba, clara abajo.
-    p.circle_filled(c, 6.0, theme::FIELD);
+    p.circle_filled(c, 6.0, theme::t().FIELD);
     let arc = |a0: f32, a1: f32, r: f32, col: Color32| {
         let pts: Vec<_> = (0..=12).map(|i| {
             let a = a0 + (a1 - a0) * i as f32 / 12.0;
@@ -235,15 +231,15 @@ pub fn radio(ui: &mut Ui, selected: bool, text: &str) -> Response {
         p.add(egui::Shape::line(pts, egui::Stroke::new(1.0_f32, col)));
     };
     use std::f32::consts::PI;
-    arc(PI * 0.75, PI * 1.75, 5.8, theme::SHADOW);
-    arc(PI * 0.75, PI * 1.75, 4.8, theme::DARK);
-    arc(-PI * 0.25, PI * 0.75, 5.8, theme::LIGHT);
-    arc(-PI * 0.25, PI * 0.75, 4.8, theme::FACE);
+    arc(PI * 0.75, PI * 1.75, 5.8, theme::t().SUNKEN_EDGE);
+    arc(PI * 0.75, PI * 1.75, 4.8, theme::t().DARK);
+    arc(-PI * 0.25, PI * 0.75, 5.8, theme::t().LIGHT);
+    arc(-PI * 0.25, PI * 0.75, 4.8, theme::t().FACE);
     if selected {
-        p.circle_filled(c, 2.0, theme::TEXT);
+        p.circle_filled(c, 2.0, theme::t().TEXT);
     }
     let clip = p.with_clip_rect(rect);
-    clip.text(pos2(rect.left() + 18.0, rect.center().y), Align2::LEFT_CENTER, text, font, theme::TEXT);
+    clip.text(pos2(rect.left() + 18.0, rect.center().y), Align2::LEFT_CENTER, text, font, theme::t().TEXT);
     if resp.has_focus() {
         focus_rect(p, Rect::from_min_size(pos2(rect.left() + 16.0, rect.top() + 2.0), vec2(tw, rect.height() - 4.0)).intersect(rect));
     }
@@ -268,7 +264,7 @@ pub fn text_field(ui: &mut Ui, text: &mut String, width: f32, hint: &str) -> Res
     let w = width.min(ui.available_width()).max(30.0);
     let (rect, _) = ui.allocate_exact_size(vec2(w, ROW_H + 1.0), Sense::hover());
     audit::record_in(ui, bound, hint, rect);
-    ui.painter().rect_filled(rect, 0.0, theme::FIELD);
+    ui.painter().rect_filled(rect, 0.0, theme::t().FIELD);
     bevel(ui.painter(), rect, Bevel::Sunken);
     let inner = rect.shrink2(vec2(4.0, 2.0));
     let mut child = ui.new_child(UiBuilder::new().max_rect(inner).layout(Layout::left_to_right(Align::Center)));
@@ -282,13 +278,13 @@ pub fn readonly_field(ui: &mut Ui, text: &str, width: f32) -> Response {
     let (rect, resp) = ui.allocate_exact_size(vec2(w, ROW_H + 1.0), Sense::hover());
     audit::record_in(ui, bound, text, rect);
     let p = ui.painter();
-    p.rect_filled(rect, 0.0, theme::FACE);
+    p.rect_filled(rect, 0.0, theme::t().FACE);
     bevel(p, rect, Bevel::Sunken);
     let font = ui_font();
     let full = text_width(ui, text, &font);
     let clip = p.with_clip_rect(rect.shrink(2.0));
     let shown = elide(ui, text, &font, rect.width() - 8.0);
-    clip.text(pos2(rect.left() + 4.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::TEXT);
+    clip.text(pos2(rect.left() + 4.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::t().TEXT);
     if full > rect.width() - 8.0 {
         resp.on_hover_text(text)
     } else {
@@ -341,7 +337,7 @@ pub fn spin(ui: &mut Ui, v: &mut f64, s: Spin) -> Response {
     let (rect, _) = ui.allocate_exact_size(vec2(w, ROW_H + 1.0), Sense::hover());
     audit::record_in(ui, bound, "spinner", rect); // i18n-ok
     let p = ui.painter();
-    p.rect_filled(rect, 0.0, theme::FIELD);
+    p.rect_filled(rect, 0.0, theme::t().FIELD);
     bevel(p, rect, Bevel::Sunken);
     let arrows = Rect::from_min_max(pos2(rect.right() - 15.0, rect.top() + 2.0), rect.max - vec2(2.0, 2.0));
     let field = Rect::from_min_max(rect.min + vec2(3.0, 2.0), pos2(arrows.left() - 1.0, rect.bottom() - 2.0));
@@ -351,8 +347,8 @@ pub fn spin(ui: &mut Ui, v: &mut f64, s: Spin) -> Response {
     {
         let wv = &mut child.style_mut().visuals.widgets;
         for w in [&mut wv.inactive, &mut wv.hovered, &mut wv.active] {
-            w.bg_fill = theme::FIELD;
-            w.weak_bg_fill = theme::FIELD;
+            w.bg_fill = theme::t().FIELD;
+            w.weak_bg_fill = theme::t().FIELD;
             w.bg_stroke = egui::Stroke::NONE;
         }
     }
@@ -422,7 +418,7 @@ pub fn slider(ui: &mut Ui, v: &mut f64, min: f64, max: f64, log: bool, width: f3
     bevel(p, track, Bevel::Sunken);
     let x = track.left() + to_t(*v) * track.width();
     let thumb = Rect::from_center_size(pos2(x, rect.center().y), vec2(10.0, rect.height() - 2.0));
-    p.rect_filled(thumb, 0.0, theme::FACE);
+    p.rect_filled(thumb, 0.0, theme::t().FACE);
     bevel(p, thumb, Bevel::Raised);
     if resp.has_focus() {
         focus_rect(p, rect);
@@ -441,7 +437,7 @@ pub fn combo(ui: &mut Ui, id_salt: impl std::hash::Hash, selected: &str, width: 
     let (rect, resp) = ui.allocate_exact_size(vec2(w, ROW_H + 1.0), Sense::click());
     audit::record_in(ui, bound, selected, rect);
     let p = ui.painter();
-    p.rect_filled(rect, 0.0, theme::FIELD);
+    p.rect_filled(rect, 0.0, theme::t().FIELD);
     bevel(p, rect, Bevel::Sunken);
     let arrow = Rect::from_min_max(pos2(rect.right() - 17.0, rect.top() + 2.0), rect.max - vec2(2.0, 2.0));
     let text_r = Rect::from_min_max(rect.min + vec2(3.0, 3.0), pos2(arrow.left() - 2.0, rect.bottom() - 3.0));
@@ -449,10 +445,10 @@ pub fn combo(ui: &mut Ui, id_salt: impl std::hash::Hash, selected: &str, width: 
     let shown = elide(ui, selected, &font, text_r.width() - 4.0);
     let open = ui.memory(|m| m.is_popup_open(id));
     if resp.has_focus() || open {
-        p.rect_filled(text_r, 0.0, theme::HIGHLIGHT);
-        p.text(pos2(text_r.left() + 2.0, text_r.center().y), Align2::LEFT_CENTER, &shown, font, theme::HIGHLIGHT_TEXT);
+        p.rect_filled(text_r, 0.0, theme::t().HIGHLIGHT);
+        p.text(pos2(text_r.left() + 2.0, text_r.center().y), Align2::LEFT_CENTER, &shown, font, theme::t().HIGHLIGHT_TEXT);
     } else {
-        p.text(pos2(text_r.left() + 2.0, text_r.center().y), Align2::LEFT_CENTER, &shown, font, theme::TEXT);
+        p.text(pos2(text_r.left() + 2.0, text_r.center().y), Align2::LEFT_CENTER, &shown, font, theme::t().TEXT);
     }
     let ra = icon_button(ui, arrow, id.with("flecha"), Icon::Down, true); // i18n-ok
     if resp.clicked() || ra.clicked() {
@@ -481,9 +477,9 @@ pub fn list_row(ui: &mut Ui, selected: bool, text: &str, right: &str, enabled: b
     let p = ui.painter();
     let hot = enabled && (selected || resp.hovered());
     if hot {
-        p.rect_filled(rect, 0.0, theme::HIGHLIGHT);
+        p.rect_filled(rect, 0.0, theme::t().HIGHLIGHT);
     }
-    let color = if hot { theme::HIGHLIGHT_TEXT } else { theme::TEXT };
+    let color = if hot { theme::t().HIGHLIGHT_TEXT } else { theme::t().TEXT };
     let lp = pos2(rect.left() + 18.0, rect.center().y);
     let rp = pos2(rect.right() - 10.0, rect.center().y);
     if enabled {
@@ -504,14 +500,14 @@ pub fn list_row(ui: &mut Ui, selected: bool, text: &str, right: &str, enabled: b
 pub fn menu_sep(ui: &mut Ui) {
     let (rect, _) = ui.allocate_exact_size(vec2(ui.available_width(), 7.0), Sense::hover());
     let y = rect.center().y;
-    ui.painter().rect_filled(Rect::from_min_max(pos2(rect.left() + 2.0, y - 1.0), pos2(rect.right() - 2.0, y)), 0.0, theme::SHADOW);
-    ui.painter().rect_filled(Rect::from_min_max(pos2(rect.left() + 2.0, y), pos2(rect.right() - 2.0, y + 1.0)), 0.0, theme::LIGHT);
+    ui.painter().rect_filled(Rect::from_min_max(pos2(rect.left() + 2.0, y - 1.0), pos2(rect.right() - 2.0, y)), 0.0, theme::t().SHADOW);
+    ui.painter().rect_filled(Rect::from_min_max(pos2(rect.left() + 2.0, y), pos2(rect.right() - 2.0, y + 1.0)), 0.0, theme::t().LIGHT);
 }
 
 /// Encabezado no clicable dentro de un menú (grupo).
 pub fn menu_caption(ui: &mut Ui, text: &str) {
     let (rect, _) = ui.allocate_exact_size(vec2(ui.available_width(), ROW_H - 2.0), Sense::hover());
-    ui.painter().text(pos2(rect.left() + 6.0, rect.center().y), Align2::LEFT_CENTER, text, bold_font(theme::SMALL_SIZE), theme::TEXT_MUTED);
+    ui.painter().text(pos2(rect.left() + 6.0, rect.center().y), Align2::LEFT_CENTER, text, bold_font(theme::SMALL_SIZE), theme::t().TEXT_MUTED);
 }
 
 // --- Contenedores ------------------------------------------------------------------------
@@ -536,8 +532,8 @@ pub fn group<R>(ui: &mut Ui, title: &str, add: impl FnOnce(&mut Ui) -> R) -> R {
         let shown = elide(ui, title, &font, max_w);
         let tw = text_width(ui, &shown, &font);
         let tr = Rect::from_min_size(pos2(border.left() + 7.0, top), vec2(tw + 4.0, 14.0));
-        p.rect_filled(tr, 0.0, theme::FACE);
-        p.text(pos2(tr.left() + 2.0, tr.center().y), Align2::LEFT_CENTER, shown, font, theme::TEXT);
+        p.rect_filled(tr, 0.0, theme::t().FACE);
+        p.text(pos2(tr.left() + 2.0, tr.center().y), Align2::LEFT_CENTER, shown, font, theme::t().TEXT);
     }
     audit::record_in(ui, bound, title, border);
     out.inner
@@ -575,13 +571,13 @@ pub fn tabs(ui: &mut Ui, sel: &mut usize, labels: &[&str]) -> bool {
         let resp = ui.interact(r, ui.id().with(("pestana", i)), Sense::click()); // i18n-ok
         audit::record_in(ui, bound, l, r);
         let p = ui.painter();
-        p.rect_filled(r, 0.0, theme::FACE);
+        p.rect_filled(r, 0.0, theme::t().FACE);
         // Borde arriba e izquierda claros, derecha oscura; sin borde abajo.
-        p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.right() - 1.0, r.top() + 1.0)), 0.0, theme::LIGHT);
-        p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.left() + 1.0, r.bottom())), 0.0, theme::LIGHT);
-        p.rect_filled(Rect::from_min_max(pos2(r.right() - 1.0, r.top() + 1.0), r.right_bottom()), 0.0, theme::DARK);
-        p.rect_filled(Rect::from_min_max(pos2(r.right() - 2.0, r.top() + 2.0), pos2(r.right() - 1.0, r.bottom())), 0.0, theme::SHADOW);
-        p.text(r.center(), Align2::CENTER_CENTER, *l, font.clone(), theme::TEXT);
+        p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.right() - 1.0, r.top() + 1.0)), 0.0, theme::t().LIGHT);
+        p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.left() + 1.0, r.bottom())), 0.0, theme::t().LIGHT);
+        p.rect_filled(Rect::from_min_max(pos2(r.right() - 1.0, r.top() + 1.0), r.right_bottom()), 0.0, theme::t().DARK);
+        p.rect_filled(Rect::from_min_max(pos2(r.right() - 2.0, r.top() + 2.0), pos2(r.right() - 1.0, r.bottom())), 0.0, theme::t().SHADOW);
+        p.text(r.center(), Align2::CENTER_CENTER, *l, font.clone(), theme::t().TEXT);
         if is && resp.has_focus() {
             focus_rect(p, r.shrink(3.0));
         }
@@ -595,17 +591,17 @@ pub fn tabs(ui: &mut Ui, sel: &mut usize, labels: &[&str]) -> bool {
 
 /// Panel en relieve bajo las pestañas.
 pub fn tab_panel<R>(ui: &mut Ui, add: impl FnOnce(&mut Ui) -> R) -> R {
-    let frame = egui::Frame::NONE.fill(theme::FACE).inner_margin(egui::Margin::same(8));
+    let frame = egui::Frame::NONE.fill(theme::t().FACE).inner_margin(egui::Margin::same(8));
     let out = frame.show(ui, |ui| {
         ui.set_width(ui.available_width());
         add(ui)
     });
     let r = out.response.rect;
     let p = ui.painter();
-    p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.left() + 1.0, r.bottom())), 0.0, theme::LIGHT);
-    p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.right(), r.top() + 1.0)), 0.0, theme::LIGHT);
-    edge(p, Rect::from_min_max(pos2(r.left() - 1.0, r.top() - 1.0), r.max), egui::Color32::TRANSPARENT, theme::DARK);
-    edge(p, Rect::from_min_max(pos2(r.left() - 1.0, r.top() - 1.0), r.max - vec2(1.0, 1.0)), egui::Color32::TRANSPARENT, theme::SHADOW);
+    p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.left() + 1.0, r.bottom())), 0.0, theme::t().LIGHT);
+    p.rect_filled(Rect::from_min_max(r.left_top(), pos2(r.right(), r.top() + 1.0)), 0.0, theme::t().LIGHT);
+    edge(p, Rect::from_min_max(pos2(r.left() - 1.0, r.top() - 1.0), r.max), egui::Color32::TRANSPARENT, theme::t().DARK);
+    edge(p, Rect::from_min_max(pos2(r.left() - 1.0, r.top() - 1.0), r.max - vec2(1.0, 1.0)), egui::Color32::TRANSPARENT, theme::t().SHADOW);
     out.inner
 }
 
@@ -615,12 +611,12 @@ pub fn title_bar(ui: &mut Ui, text: &str, right: impl FnOnce(&mut Ui)) -> Rect {
     let bound = ui.max_rect();
     let h = 20.0;
     let (rect, _) = ui.allocate_exact_size(vec2(ui.available_width(), h), Sense::hover());
-    gradient_h(ui.painter(), rect, theme::TITLE_A, theme::TITLE_B);
+    gradient_h(ui.painter(), rect, theme::t().TITLE_A, theme::t().TITLE_B);
     let font = bold_font(theme::UI_SIZE);
     // El texto no pasa del 40 % del ancho: el contraste se verifica ahí.
     let max_w = (rect.width() * 0.4).max(60.0);
     let shown = elide(ui, text, &font, max_w);
-    ui.painter().text(pos2(rect.left() + 6.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::TITLE_TEXT);
+    ui.painter().text(pos2(rect.left() + 6.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::t().TITLE_TEXT);
     let rr = Rect::from_min_max(pos2(rect.left() + rect.width() * 0.45, rect.top() + 1.0), rect.max - vec2(2.0, 1.0));
     let mut child = ui.new_child(UiBuilder::new().max_rect(rr).layout(Layout::right_to_left(Align::Center)));
     child.spacing_mut().item_spacing.x = 2.0;
@@ -641,9 +637,9 @@ pub fn title_text_button(ui: &mut Ui, text: &str) -> Response {
     let w = text_width(ui, text, &font) + 10.0;
     let (rect, resp) = ui.allocate_exact_size(vec2(w, 16.0), Sense::click());
     let p = ui.painter();
-    p.rect_filled(rect, 0.0, theme::FACE);
+    p.rect_filled(rect, 0.0, theme::t().FACE);
     bevel(p, rect, if resp.is_pointer_button_down_on() { Bevel::Pressed } else { Bevel::Raised });
-    p.text(rect.center(), Align2::CENTER_CENTER, text, font, theme::TEXT);
+    p.text(rect.center(), Align2::CENTER_CENTER, text, font, theme::t().TEXT);
     resp
 }
 
@@ -656,7 +652,7 @@ pub fn status_panel(ui: &mut Ui, text: &str, width: f32) -> Response {
     bevel(ui.painter(), rect, Bevel::ThinSunken);
     let font = ui_font();
     let shown = elide(ui, text, &font, rect.width() - 8.0);
-    ui.painter().with_clip_rect(rect.shrink(1.0)).text(pos2(rect.left() + 4.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::TEXT);
+    ui.painter().with_clip_rect(rect.shrink(1.0)).text(pos2(rect.left() + 4.0, rect.center().y), Align2::LEFT_CENTER, &shown, font, theme::t().TEXT);
     if shown != text {
         resp.on_hover_text(text)
     } else {
@@ -679,7 +675,7 @@ pub fn scrollbar(ui: &mut Ui, rect: Rect, vertical: bool, pos: &mut f32, content
     let before = *pos;
     let p = ui.painter();
     // Canal: trama clara.
-    p.rect_filled(rect, 0.0, theme::pal::TURQUESA_4);
+    p.rect_filled(rect, 0.0, theme::t().SCROLL_TRACK);
     let len = if vertical { rect.height() } else { rect.width() };
     let thick = if vertical { rect.width() } else { rect.height() };
     let (a, b) = if vertical {
@@ -721,7 +717,7 @@ pub fn scrollbar(ui: &mut Ui, rect: Rect, vertical: bool, pos: &mut f32, content
             }
         }
         let p = ui.painter();
-        p.rect_filled(thumb, 0.0, theme::FACE);
+        p.rect_filled(thumb, 0.0, theme::t().FACE);
         bevel(p, thumb, Bevel::Raised);
     }
     *pos = pos.clamp(0.0, max);
@@ -741,9 +737,22 @@ pub enum Level {
 impl Level {
     pub fn color(self) -> Color32 {
         match self {
-            Level::Info => theme::TEXT,
-            Level::Warning => theme::WARNING,
-            Level::Error => theme::ERROR,
+            Level::Info => theme::t().TEXT,
+            Level::Warning => theme::t().WARNING,
+            Level::Error => theme::t().ERROR,
+        }
+    }
+    /// Franja de fondo: solo el error la lleva (se distingue del aviso por
+    /// algo más que el tono).
+    pub fn band(self) -> Option<Color32> {
+        (self == Level::Error).then(|| theme::t().ERROR_BG)
+    }
+    /// Texto con el color y la franja del nivel.
+    pub fn rich(self, text: impl Into<String>) -> RichText {
+        let t = RichText::new(text).color(self.color());
+        match self.band() {
+            Some(b) => t.background_color(b),
+            None => t,
         }
     }
     /// Palabra que precede al mensaje ("Aviso:", "Error:").
@@ -771,7 +780,7 @@ pub fn paint_level_icon(p: &egui::Painter, center: egui::Pos2, size: f32, level:
         Level::Warning => {
             let pts = vec![center + vec2(0.0, -r), center + vec2(r, r * 0.85), center + vec2(-r, r * 0.85)];
             p.add(egui::Shape::convex_polygon(pts, c, egui::Stroke::NONE));
-            let ink = theme::FIELD;
+            let ink = theme::t().FIELD;
             p.line_segment([center + vec2(0.0, -r * 0.35), center + vec2(0.0, r * 0.3)], egui::Stroke::new(stroke.width, ink));
             p.circle_filled(center + vec2(0.0, r * 0.58), size * 0.07, ink);
         }
@@ -783,7 +792,7 @@ pub fn paint_level_icon(p: &egui::Painter, center: egui::Pos2, size: f32, level:
                 })
                 .collect();
             p.add(egui::Shape::convex_polygon(pts, c, egui::Stroke::NONE));
-            let ink = theme::FIELD;
+            let ink = theme::t().FIELD;
             let k = r * 0.38;
             let s = egui::Stroke::new(stroke.width, ink);
             p.line_segment([center + vec2(-k, -k), center + vec2(k, k)], s);
@@ -800,9 +809,9 @@ pub fn notice(ui: &mut Ui, level: Level, text: &str) -> Response {
             let (rect, _) = ui.allocate_exact_size(vec2(14.0, 14.0), Sense::hover());
             paint_level_icon(ui.painter(), rect.center(), 13.0, level);
             if level != Level::Info {
-                ui.label(RichText::new(surshape_i18n::tr(level.label_key())).font(bold_font(theme::UI_SIZE)).color(level.color()));
+                ui.label(level.rich(surshape_i18n::tr(level.label_key())).font(bold_font(theme::UI_SIZE)));
             }
-            ui.add(egui::Label::new(RichText::new(text).color(level.color())).wrap());
+            ui.add(egui::Label::new(level.rich(text)).wrap());
         })
         .response;
     audit::record_in(ui, bound, text, r.rect);

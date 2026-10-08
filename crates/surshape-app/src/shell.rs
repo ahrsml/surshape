@@ -196,12 +196,12 @@ impl App {
             ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
             for (i, (text, m)) in titles.iter().enumerate() {
                 let mut job = LayoutJob::default();
-                let fmt = TextFormat { font_id: font.clone(), color: theme::TEXT, ..Default::default() };
+                let fmt = TextFormat { font_id: font.clone(), color: theme::t().TEXT, ..Default::default() };
                 match m {
                     Some((pos, c)) => {
                         let end = pos + c.len_utf8();
                         job.append(&text[..*pos], 0.0, fmt.clone());
-                        job.append(&text[*pos..end], 0.0, TextFormat { underline: egui::Stroke::new(1.0_f32, theme::TEXT), ..fmt.clone() });
+                        job.append(&text[*pos..end], 0.0, TextFormat { underline: egui::Stroke::new(1.0_f32, theme::t().TEXT), ..fmt.clone() });
                         job.append(&text[end..], 0.0, fmt);
                     }
                     None => job.append(text, 0.0, fmt),
@@ -223,7 +223,7 @@ impl App {
                     win32::bevel(p, rect, Bevel::ThinRaised);
                 }
                 let off = if self.open_menu == Some(i) { vec2(1.0, 1.0) } else { vec2(0.0, 0.0) };
-                p.galley(rect.center() - galley.size() * 0.5 + off, galley, theme::TEXT);
+                p.galley(rect.center() - galley.size() * 0.5 + off, galley, theme::t().TEXT);
                 self.menu_rects.push(rect);
             }
         });
@@ -240,7 +240,7 @@ impl App {
             .fixed_pos(anchor.left_bottom())
             .constrain(true)
             .show(ctx, |ui| {
-                let frame = egui::Frame::NONE.fill(theme::FACE).inner_margin(egui::Margin::same(3));
+                let frame = egui::Frame::NONE.fill(theme::t().FACE).inner_margin(egui::Margin::same(3));
                 let r = frame.show(ui, |ui| {
                     ui.set_min_width(180.0);
                     ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
@@ -521,14 +521,14 @@ impl App {
         let w = 220.0f32.min(ui.available_width() - 4.0).max(60.0);
         let (rect, _) = ui.allocate_exact_size(vec2(w, 18.0), Sense::hover());
         let p = ui.painter();
-        p.rect_filled(rect, 0.0, theme::FIELD);
+        p.rect_filled(rect, 0.0, theme::t().FIELD);
         win32::bevel(p, rect, Bevel::ThinSunken);
         let fill = Rect::from_min_size(rect.min + vec2(2.0, 2.0), vec2((rect.width() - 4.0) * prog, rect.height() - 4.0));
-        p.rect_filled(fill, 0.0, theme::HIGHLIGHT);
+        p.rect_filled(fill, 0.0, theme::t().HIGHLIGHT);
         let clip = p.with_clip_rect(rect.shrink(1.0));
-        clip.text(rect.center(), Align2::CENTER_CENTER, &text, ui_font(), theme::TEXT);
+        clip.text(rect.center(), Align2::CENTER_CENTER, &text, ui_font(), theme::t().TEXT);
         // El texto sobre la parte llena va en blanco.
-        p.with_clip_rect(fill).text(rect.center(), Align2::CENTER_CENTER, &text, ui_font(), theme::HIGHLIGHT_TEXT);
+        p.with_clip_rect(fill).text(rect.center(), Align2::CENTER_CENTER, &text, ui_font(), theme::t().HIGHLIGHT_TEXT);
     }
 
     // --- Línea de ayuda y barra de estado ------------------------------------------------------
@@ -551,7 +551,7 @@ impl App {
                             let (r, _) = ui.allocate_exact_size(vec2(14.0, 14.0), Sense::hover());
                             win32::paint_level_icon(ui.painter(), r.center(), 13.0, m.level);
                             let word = if m.level == Level::Info { String::new() } else { format!("{} ", tr(m.level.label_key())) };
-                            win32::label_color(ui, &format!("{word}{}", m.text()), m.level.color());
+                            win32::label(ui, m.level.rich(format!("{word}{}", m.text())));
                         });
                     });
                 }

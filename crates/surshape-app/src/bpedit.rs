@@ -192,7 +192,7 @@ impl App {
                     }
                     let y = track.bottom() - v_to_y(&spec, bp.puntos[i].1) * track.height();
                     let thumb = Rect::from_center_size(pos2(yr.center().x, y), vec2(18.0, 10.0));
-                    p.rect_filled(thumb, 0.0, theme::FACE);
+                    p.rect_filled(thumb, 0.0, theme::t().FACE);
                     win32::bevel(p, thumb, Bevel::Raised);
                 }
                 self.hint_key(&yresp, "ui.ayuda.bp_slider");
@@ -439,7 +439,7 @@ impl App {
     #[allow(clippy::too_many_arguments)]
     fn bp_canvas(&mut self, ui: &Ui, rect: Rect, resp: &egui::Response, spec: &ParamSpec, bp: &mut Breakpoints, ed: &mut BpEdit, dur: f64) {
         let p = ui.painter_at(rect);
-        p.rect_filled(rect, 0.0, theme::VIEW_BG);
+        p.rect_filled(rect, 0.0, theme::t().VIEW_BG);
         let tscale = if bp.tiempo == TimeMode::Absoluto { 1.0 } else { dur };
         let x_of = |t: f64| rect.left() + ((t * tscale / dur.max(1e-9)) as f32).clamp(0.0, 1.0) * rect.width();
         let y_of = |v: f64| rect.bottom() - v_to_y(spec, v) * rect.height();
@@ -451,7 +451,7 @@ impl App {
             let n = a.frames();
             let mid = rect.center().y;
             let amp = rect.height() * 0.45;
-            let col = egui::Color32::from_rgba_unmultiplied(0x47, 0xD8, 0xF9, 60);
+            let col = theme::bp_ghost();
             let mut x = rect.left();
             while x < rect.right() {
                 let s = (((x - rect.left()) / rect.width()) as f64 * n as f64) as usize;
@@ -464,18 +464,18 @@ impl App {
             // Cabezal
             if self.player.is_playing_buf(&loaded.audio) {
                 let px = rect.left() + (self.player.position() as f32 / n.max(1) as f32) * rect.width();
-                p.line_segment([pos2(px, rect.top()), pos2(px, rect.bottom())], Stroke::new(2.0_f32, theme::VIEW_CURSOR));
+                p.line_segment([pos2(px, rect.top()), pos2(px, rect.bottom())], Stroke::new(2.0_f32, theme::t().VIEW_CURSOR));
             }
         }
         // Grilla y rótulos de valor
         for f in [0.0f32, 0.5, 1.0] {
             let y = rect.bottom() - f * rect.height();
-            p.line_segment([pos2(rect.left(), y), pos2(rect.right(), y)], Stroke::new(1.0_f32, theme::VIEW_GRID));
+            p.line_segment([pos2(rect.left(), y), pos2(rect.right(), y)], Stroke::new(1.0_f32, theme::t().VIEW_GRID));
             let label = crate::page::fmt_param(spec, y_to_v(spec, f));
-            let g = p.layout_no_wrap(label, mono_font(11.0), theme::VIEW_TEXT);
+            let g = p.layout_no_wrap(label, mono_font(11.0), theme::t().VIEW_TEXT);
             let r = Rect::from_min_size(pos2(rect.left() + 2.0, (y - g.size().y).max(rect.top())), g.size() + vec2(4.0, 0.0));
-            p.rect_filled(r, 0.0, theme::VIEW_BG);
-            p.galley(r.min + vec2(2.0, 0.0), g, theme::VIEW_TEXT);
+            p.rect_filled(r, 0.0, theme::t().VIEW_BG);
+            p.galley(r.min + vec2(2.0, 0.0), g, theme::t().VIEW_TEXT);
         }
 
         // Interacción
@@ -529,20 +529,20 @@ impl App {
             pts.push(pos2(x, y_of(bp.value_at(t, dur))));
             x += 2.0;
         }
-        p.add(Shape::line(pts, Stroke::new(2.0_f32, theme::ACCENT)));
+        p.add(Shape::line(pts, Stroke::new(2.0_f32, theme::t().ACCENT)));
         for (i, &(t, v)) in bp.puntos.iter().enumerate() {
             let c = pos2(x_of(t), y_of(v));
             let active = ed.drag == Some(i) || ed.sel == Some(i);
             let r = Rect::from_center_size(c, vec2(if active { 9.0 } else { 7.0 }, if active { 9.0 } else { 7.0 }));
-            p.rect_filled(r, 0.0, if active { theme::VIEW_CURSOR } else { theme::ACCENT_2 });
-            p.rect_stroke(r, 0.0, Stroke::new(1.0_f32, theme::DARK), egui::StrokeKind::Inside);
+            p.rect_filled(r, 0.0, if active { theme::t().VIEW_CURSOR } else { theme::t().ACCENT_2 });
+            p.rect_stroke(r, 0.0, Stroke::new(1.0_f32, theme::t().DARK), egui::StrokeKind::Inside);
         }
         win32::bevel(&p, rect, Bevel::Sunken);
         if let Some(pos) = resp.hover_pos() {
             let v = y_to_v(spec, (rect.bottom() - pos.y) / rect.height());
             let tt = t_of(pos.x) * tscale;
             let txt = format!("{} · {}", self.prefs.unidades.fmt(tt, 48000), crate::page::fmt_param(spec, v));
-            p.text(pos2(rect.right() - 6.0, rect.top() + 4.0), Align2::RIGHT_TOP, txt, mono_font(12.0), theme::VIEW_TEXT);
+            p.text(pos2(rect.right() - 6.0, rect.top() + 4.0), Align2::RIGHT_TOP, txt, mono_font(12.0), theme::t().VIEW_TEXT);
         }
     }
 

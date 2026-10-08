@@ -45,7 +45,9 @@ pub fn edge(p: &Painter, r: Rect, tl: Color32, br: Color32) {
 
 /// Dibuja el borde 3D de `r` (sin relleno).
 pub fn bevel(p: &Painter, r: Rect, b: Bevel) {
-    use theme::{DARK, FACE, LIGHT, SHADOW};
+    let th = theme::t();
+    #[allow(non_snake_case)]
+    let (DARK, FACE, LIGHT, SHADOW, SUNKEN) = (th.DARK, th.FACE, th.LIGHT, th.SHADOW, th.SUNKEN_EDGE);
     match b {
         Bevel::Raised => {
             edge(p, r, LIGHT, DARK);
@@ -56,24 +58,24 @@ pub fn bevel(p: &Painter, r: Rect, b: Bevel) {
             edge(p, r.shrink(1.0), SHADOW, FACE);
         }
         Bevel::Sunken => {
-            edge(p, r, SHADOW, LIGHT);
+            edge(p, r, SUNKEN, LIGHT);
             edge(p, r.shrink(1.0), DARK, FACE);
         }
-        Bevel::ThinSunken => edge(p, r, SHADOW, LIGHT),
+        Bevel::ThinSunken => edge(p, r, SUNKEN, LIGHT),
         Bevel::ThinRaised => edge(p, r, LIGHT, SHADOW),
     }
 }
 
 /// Borde grabado (group boxes, separadores).
 pub fn etched(p: &Painter, r: Rect) {
-    p.rect_stroke(r.translate(vec2(1.0, 1.0)), 0.0, Stroke::new(1.0_f32, theme::LIGHT), egui::StrokeKind::Inside);
-    p.rect_stroke(r, 0.0, Stroke::new(1.0_f32, theme::SHADOW), egui::StrokeKind::Inside);
+    p.rect_stroke(r.translate(vec2(1.0, 1.0)), 0.0, Stroke::new(1.0_f32, theme::t().LIGHT), egui::StrokeKind::Inside);
+    p.rect_stroke(r, 0.0, Stroke::new(1.0_f32, theme::t().SHADOW), egui::StrokeKind::Inside);
 }
 
 /// Separador vertical grabado (toolbar).
 pub fn vsep(p: &Painter, x: f32, y0: f32, y1: f32) {
-    p.rect_filled(Rect::from_min_max(pos2(x, y0), pos2(x + 1.0, y1)), 0.0, theme::SHADOW);
-    p.rect_filled(Rect::from_min_max(pos2(x + 1.0, y0), pos2(x + 2.0, y1)), 0.0, theme::LIGHT);
+    p.rect_filled(Rect::from_min_max(pos2(x, y0), pos2(x + 1.0, y1)), 0.0, theme::t().SHADOW);
+    p.rect_filled(Rect::from_min_max(pos2(x + 1.0, y0), pos2(x + 2.0, y1)), 0.0, theme::t().LIGHT);
 }
 
 /// Rectángulo con degradado horizontal (barras de título).
@@ -90,10 +92,10 @@ pub fn gradient_h(p: &Painter, r: Rect, a: Color32, b: Color32) {
 
 /// Rectángulo de foco punteado (control con foco del teclado).
 pub fn focus_rect(p: &Painter, r: Rect) {
-    let s = Stroke::new(1.0_f32, theme::TEXT);
+    let s = Stroke::new(1.0_f32, theme::t().TEXT);
     let pts = [r.left_top(), r.right_top(), r.right_bottom(), r.left_bottom(), r.left_top()];
     for w in pts.windows(2) {
-        p.extend(Shape::dotted_line(&[w[0], w[1]], theme::TEXT, 2.0, 0.5));
+        p.extend(Shape::dotted_line(&[w[0], w[1]], theme::t().TEXT, 2.0, 0.5));
     }
     let _ = s;
 }
@@ -101,8 +103,8 @@ pub fn focus_rect(p: &Painter, r: Rect) {
 /// Texto con relieve (deshabilitado, como Windows: blanco desplazado y
 /// sombra encima).
 pub fn disabled_text(p: &Painter, pos: Pos2, anchor: egui::Align2, text: &str, font: egui::FontId) {
-    p.text(pos + vec2(1.0, 1.0), anchor, text, font.clone(), theme::LIGHT);
-    p.text(pos, anchor, text, font, theme::TEXT_DISABLED);
+    p.text(pos + vec2(1.0, 1.0), anchor, text, font.clone(), theme::t().LIGHT);
+    p.text(pos, anchor, text, font, theme::t().TEXT_DISABLED);
 }
 
 /// Auditoría de layout: cada widget registra su rectángulo y el disponible
@@ -175,5 +177,5 @@ pub mod audit {
 pub const ROW_H: f32 = 20.0;
 
 pub(crate) fn text_width(ui: &Ui, text: &str, font: &egui::FontId) -> f32 {
-    ui.fonts(|f| f.layout_no_wrap(text.to_string(), font.clone(), theme::TEXT).size().x)
+    ui.fonts(|f| f.layout_no_wrap(text.to_string(), font.clone(), theme::t().TEXT).size().x)
 }

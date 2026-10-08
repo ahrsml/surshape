@@ -14,7 +14,7 @@ use surshape_i18n::{t, tr};
 
 impl App {
     pub(crate) fn main_page(&mut self, ui: &mut Ui) {
-        let face = egui::Frame::NONE.fill(theme::FACE);
+        let face = egui::Frame::NONE.fill(theme::t().FACE);
         let top = egui::TopBottomPanel::top("zona_visor") // i18n-ok
             .resizable(true)
             .default_height(self.prefs.alto_visor)
@@ -97,7 +97,7 @@ impl App {
 
         // Lecturas (Courier, sobre el fondo del visor).
         let p = ui.painter();
-        p.rect_filled(readout, 0.0, theme::VIEW_BG);
+        p.rect_filled(readout, 0.0, theme::t().VIEW_BG);
         if let Some(d) = &data {
             let frames = d.audio.frames();
             let view_start = self.view.start.max(0.0) / sr as f64;
@@ -105,9 +105,9 @@ impl App {
             let pos = if self.player.is_playing_buf(&d.audio) { self.player.position() } else { self.view.cursor };
             let f = mono_font(12.0);
             let rp = p.with_clip_rect(readout);
-            rp.text(readout.left_center() + vec2(4.0, 0.0), Align2::LEFT_CENTER, unit.fmt(view_start, sr), f.clone(), theme::VIEW_TEXT);
-            rp.text(readout.center(), Align2::CENTER_CENTER, t!("ui.visor.cursor_en", t = unit.fmt(pos as f64 / sr as f64, sr)), f.clone(), theme::VIEW_CURSOR);
-            rp.text(readout.right_center() - vec2(4.0, 0.0), Align2::RIGHT_CENTER, unit.fmt(view_end, sr), f, theme::VIEW_TEXT);
+            rp.text(readout.left_center() + vec2(4.0, 0.0), Align2::LEFT_CENTER, unit.fmt(view_start, sr), f.clone(), theme::t().VIEW_TEXT);
+            rp.text(readout.center(), Align2::CENTER_CENTER, t!("ui.visor.cursor_en", t = unit.fmt(pos as f64 / sr as f64, sr)), f.clone(), theme::t().VIEW_CURSOR);
+            rp.text(readout.right_center() - vec2(4.0, 0.0), Align2::RIGHT_CENTER, unit.fmt(view_end, sr), f, theme::t().VIEW_TEXT);
         }
         ui.allocate_rect(wave_area, Sense::hover());
         match &data {
@@ -130,12 +130,12 @@ impl App {
                 let r = viewer::show(ui, wave, &mut self.view, d, playhead, spectro.as_deref(), opts);
                 self.hint_key(&r, "ui.ayuda.onda");
                 if self.view_kind == ViewKind::Espectrograma && self.spectro_pending(&key) {
-                    ui.painter().text(wave.center(), Align2::CENTER_CENTER, tr("ui.visor.calculando_espectro"), theme::ui_font(), theme::VIEW_TEXT);
+                    ui.painter().text(wave.center(), Align2::CENTER_CENTER, tr("ui.visor.calculando_espectro"), theme::ui_font(), theme::t().VIEW_TEXT);
                 }
             }
             None => {
                 let p = ui.painter();
-                p.rect_filled(wave, 0.0, theme::VIEW_BG);
+                p.rect_filled(wave, 0.0, theme::t().VIEW_BG);
                 win32::bevel(p, wave, win32::Bevel::Sunken);
                 let msg = match (id, &target) {
                     (None, _) => t!("ui.visor.vacio").to_string(),
@@ -145,7 +145,7 @@ impl App {
                     }
                     (Some(_), Some((_, path))) => t!("ui.visor.cargando", archivo = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()),
                 };
-                p.text(wave.center(), Align2::CENTER_CENTER, msg, theme::ui_font(), theme::VIEW_TEXT);
+                p.text(wave.center(), Align2::CENTER_CENTER, msg, theme::ui_font(), theme::t().VIEW_TEXT);
             }
         }
         // --- Transporte ---

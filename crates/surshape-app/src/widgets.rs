@@ -86,7 +86,7 @@ pub fn paint_state_icon(p: &egui::Painter, c: egui::Pos2, size: f32, st: CellSta
             }
         }
         CellState::EnProceso(f) => {
-            p.circle_stroke(c, r - w * 0.5, Stroke::new(w, theme::GRID_LINE));
+            p.circle_stroke(c, r - w * 0.5, Stroke::new(w, theme::t().GRID_LINE));
             let n = 24;
             let end = (f.clamp(0.02, 1.0) * n as f32).ceil() as usize;
             let pts: Vec<_> = (0..=end)
@@ -95,7 +95,7 @@ pub fn paint_state_icon(p: &egui::Painter, c: egui::Pos2, size: f32, st: CellSta
                     c + vec2(a.cos(), a.sin()) * (r - w * 0.5)
                 })
                 .collect();
-            p.add(egui::Shape::line(pts, Stroke::new(w * 1.4, theme::ACCENT)));
+            p.add(egui::Shape::line(pts, Stroke::new(w * 1.4, theme::t().ACCENT)));
         }
         CellState::Error | CellState::FuenteFalta => {
             let pts: Vec<_> = (0..8)
@@ -105,7 +105,7 @@ pub fn paint_state_icon(p: &egui::Painter, c: egui::Pos2, size: f32, st: CellSta
                 })
                 .collect();
             p.add(egui::Shape::convex_polygon(pts, ink, Stroke::NONE));
-            let bg = if ink == theme::HIGHLIGHT_TEXT { theme::HIGHLIGHT } else { theme::FIELD };
+            let bg = if ink == theme::t().HIGHLIGHT_TEXT { theme::t().HIGHLIGHT } else { theme::t().FIELD };
             let k = r * 0.38;
             let s = Stroke::new(w, bg);
             p.line_segment([c + vec2(-k, -k), c + vec2(k, k)], s);

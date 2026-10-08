@@ -1,5 +1,19 @@
 # Cambios de SURSHAPE
 
+## 0.9.1 — tema "Crepúsculo de invierno"
+
+- **Tema oscuro nuevo por defecto**: azules fríos y lavandas de crepúsculo
+  (cielo invernal de Los Ríos). Fondos, paneles, grilla y visor oscuros; la
+  onda en lavanda; texto claro. Sin negro ni rojo: el tono más oscuro es el
+  azul marino #142A4E. El look Win32 clásico no cambia.
+- **Preferencias -> Accesibilidad -> Tema**: "Crepúsculo (por defecto)" o
+  "Claro (clásico)", la paleta anterior. La elección se guarda.
+- Los errores se muestran sobre una franja propia, además del ícono y la
+  palabra "Error", para distinguirlos de los avisos sin depender del tono.
+- La celda elegida de la grilla lleva un borde de foco.
+- Todo texto cumple 4,5:1 y los gráficos 3:1 en los dos temas; un test
+  impide usar colores fuera de la paleta o más oscuros que #142A4E.
+
 ## 0.9.0 — marcadores, bulk y sub-patches (fase 8)
 
 - **Marcadores** por fuente: importar y exportar etiquetas de Audacity,

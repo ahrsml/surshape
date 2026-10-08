@@ -235,25 +235,62 @@ h) Línea de ayuda contextual y, debajo, barra de estado con paneles
 - Referencia visual: captura de Soundshaper 6.3 (`sounshaperlooksample.jpg`
   en la raíz del proyecto).
 
-### Color Win32 (reemplaza el tema claro anterior)
-- Misma paleta, sin negro ni rojo; **blanco permitido**.
-- ButtonFace / fondo de ventana #C5D8E5 · bisel claro #FFFFFF · Shadow
-  #69A3C1 · DarkShadow #16323F.
-- Campos editables #FFFFFF. Selección (Highlight clásico) #0B4A78 con texto
-  blanco.
-- Barras de título de páginas y diálogos internos: degradado #0B4A78 ->
-  #2887AC, texto blanco en negrita.
-- Visor (osciloscopio sin negro): fondo #16323F, onda #47D8F9, lecturas
-  #9DEAFE, cursor #CFF6FE, selección #2887AC semitransparente.
-- Espectrograma #16323F -> #2887AC -> #04B5E9 -> #47D8F9 -> #CFF6FE.
-- Encabezados de la barra lateral, uno por familia: #69A3C1, #70E1FE,
-  #88E1DE, #46C5EF.
-- Grilla: encabezados con bisel en #C5D8E5; celdas blancas o #DCF6F5;
-  columna 0 en #B4ECE9; líneas #93B9D2; selección #0B4A78 con texto blanco.
-- Texto #16323F, secundario #2B5468, aviso #0B4A78, error #082F66 (siempre
-  ícono + texto). Acentos (Render, foco) #04B5E9 y #2DC9C8.
-- Todo desde `theme.rs` con nombres semánticos; el test de contraste cubre
-  todos los pares nuevos (visor oscuro y barras de título incluidos).
+### Color Win32: tema "Crepúsculo de invierno" (0.9.1, por defecto)
+Paleta "Crepúsculo de invierno" (cielo invernal de Los Ríos). Sin negro ni
+rojo, para que SURSHAPE no se confunda con NOISEGEK; el piso es #142A4E.
+Oscuros para fondos, paneles, grilla y visor; claros solo para texto, onda y
+acentos. Se cambia el color, no la forma: biseles, campos hundidos, group
+boxes, sin esquinas redondeadas, sombras ni animaciones. egui parte de
+`Visuals::dark()` y el tema lo sobrescribe.
+
+- **Paleta permitida (solo estos valores; lo exige el test
+  `paleta_solo_valores_permitidos`)**: base #29559C #376BBF #748FD2 #9D96C0
+  #9397C7 · escala oscura (#29559C con negro al 15/25/35/42/50 %) #234885
+  #1F4075 #1B3765 #18315A #142A4E (piso) · claros #EAEEF8 #D4D5E9 #C7D2ED.
+  Un derivado nuevo se obtiene igual (base con blanco o negro) y se avisa
+  antes de agregarlo.
+- ButtonFace / ventana #18315A · paneles y barra lateral #1B3765 · bisel
+  claro #748FD2 · sombra y sombra oscura #142A4E · borde superior izquierdo
+  de lo hundido (campos, radios) #376BBF.
+- Campos #142A4E con texto #EAEEF8. Texto #EAEEF8, secundario #D4D5E9,
+  lavandas #9D96C0 / #9397C7 solo sobre #142A4E o #18315A. Deshabilitado
+  #748FD2 (exento de AA, 4,49:1 sobre campo).
+- Selección #29559C con texto #EAEEF8. Barras de título: degradado #1B3765 ->
+  #376BBF, texto #EAEEF8 en negrita a la izquierda.
+- Visor: fondo #142A4E, onda #9D96C0, lecturas #D4D5E9, cursor #EAEEF8,
+  selección #376BBF semitransparente (alfa 56), regla y líneas #234885,
+  marcadores #748FD2, bucle #9397C7.
+- Espectrograma #142A4E -> #29559C -> #376BBF -> #748FD2 -> #9D96C0 -> #EAEEF8.
+- Encabezados de la barra lateral: #29559C y #376BBF con texto #EAEEF8;
+  #9D96C0 y #C7D2ED con texto #142A4E.
+- Grilla: celdas #1B3765, vacías #18315A, columna 0 #1F4075, encabezados
+  #18315A con bisel, líneas #234885 (decorativas), selección #29559C con
+  texto #EAEEF8 y borde de foco #9D96C0; entrada 2 / marca #234885.
+- Acentos (Render, foco, hot-tracking) #748FD2 y #9D96C0. Botón de toolbar
+  encendido #234885. Íconos: acento #748FD2, carpeta #9D96C0.
+- Aviso: texto #D4D5E9 con su ícono. Error: texto #EAEEF8 sobre franja
+  #29559C con ícono de error (`Level::rich`): se distingue del aviso por algo
+  más que el tono.
+- **Tema "Claro (clásico)"** en Preferencias -> Accesibilidad: la paleta
+  acero/celeste/turquesa de la 0.9.0 (`theme::CLASICO`, `pal_clasico`). La
+  preferencia se guarda (`Prefs::tema`); los tests y el modo captura usan
+  Crepúsculo. Único cambio: acento #2887AC en lugar de #04B5E9 (la línea de
+  envolvente sobre blanco daba 2,3:1).
+- Código: `theme::t()` devuelve el tema activo; los colores son campos en
+  mayúsculas (`theme::t().FACE`). Ningún color literal fuera de `theme.rs`.
+- **Historial de decisiones de contraste** (test
+  `contraste_text_pairs_meet_wcag_aa`, ambos temas; texto >= 4,5:1, gráficos
+  y bordes funcionales >= 3:1):
+  - 0.9.1: cuarto encabezado lateral #C7D2ED y no #748FD2 (#142A4E sobre
+    #748FD2 = 4,49:1). Bisel claro #748FD2 y no #376BBF (2,47:1 contra la
+    cara: los botones se veían planos). El piso #142A4E no se ve sobre la
+    cara, así que lo hundido lleva #376BBF arriba a la izquierda. Selección
+    del visor con alfa 56 (con 70, la lectura del tema clásico daba 4,29:1).
+    Foco #9D96C0 sobre la selección #29559C da 2,63:1 (decorativo; contra las
+    celdas vecinas 4,24 y 4,65).
+  - Hasta 0.9.0 (tema claro): texto secundario #2B5468, aviso #0B4A78 y
+    error #082F66 fuera de paleta por legibilidad; líneas de grilla #93B9D2
+    decorativas (2,08:1).
 
 ### Esquemas aprobados (2026-10-06) y agregados
 - Esquemas ASCII de principal, parámetros, Graph-Edit, Preferencias y
@@ -349,14 +386,11 @@ h) Línea de ayuda contextual y, debajo, barra de estado con paneles
 
 ### Color (`surshape-app/src/theme.rs`, nombres semánticos)
 
-- **Prohibidos negro y rojo.** Paleta: acero #2887AC #69A3C1 #93B9D2 #C5D8E5 ·
-  celeste #47D8F9 #70E1FE #9DEAFE #CFF6FE · turquesa #2DC9C8 #88E1DE #B4ECE9
-  #DCF6F5 · cielo #04B5E9 #46C5EF #83D1F5 #C1E9FC. Texto #16323F.
-- Fuera de paleta, por legibilidad: texto secundario #2B5468, aviso #0B4A78,
-  error #082F66.
-- WCAG AA (4,5:1) en todo texto, verificado por test
+- **Prohibidos negro y rojo; nada más oscuro que #142A4E.** Paleta y
+  asignación: ver "Color Win32" arriba.
+- WCAG AA (4,5:1) en todo texto y >= 3:1 en gráficos y bordes funcionales,
+  en los dos temas, verificado por test
   (`cargo test -p surshape-app contraste -- --nocapture` imprime los pares).
-  Gráficos >= 3:1.
 - Estados de celda (renderizada / desactualizada / error / en proceso):
   ícono + texto, nunca solo color.
 
@@ -402,6 +436,9 @@ h) Línea de ayuda contextual y, debajo, barra de estado con paneles
 
 ## Estado
 
+- **0.9.1 implementada (2026-10-07), pendiente de aprobación**: tema oscuro
+  "Crepúsculo de invierno" por defecto y "Claro (clásico)" como opción
+  (Preferencias -> Accesibilidad). Ver "Color Win32" y CHANGELOG.md.
 - **Fase 8 (versión 0.9.0) implementada (2026-10-07), pendiente de
   aprobación**: marcadores (`surshape-app/src/markers.rs`; etiquetas de
   Audacity), bulk (casilla y menú Patch; `ImportTarget::DuplicateRow`),

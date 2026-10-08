@@ -1,9 +1,10 @@
 //! Tema Win32 clásico y tipografía. Todos los colores de la interfaz salen
 //! de aquí, con nombres semánticos. Reglas (ver CLAUDE.md):
-//!   - prohibidos el negro y el rojo; blanco permitido;
-//!   - la misma paleta de celestes, azules y turquesas, mapeada a los
-//!     colores del sistema de Windows 2000/XP (ButtonFace, sombras, campos,
-//!     selección, barras de título);
+//!   - paleta "Crepúsculo de invierno": azules fríos y lavandas, oscuros de
+//!     fondo y claros para texto, mapeada a los colores del sistema de
+//!     Windows 2000/XP (ButtonFace, sombras, campos, selección, títulos);
+//!   - prohibidos el negro y el rojo; el piso es #142A4E (azul marino), para
+//!     que SURSHAPE no se confunda con NOISEGEK;
 //!   - todo texto con contraste WCAG AA (>= 4,5:1) contra su fondo: lo
 //!     verifica el test `contraste_text_pairs_meet_wcag_aa` (y lo imprime con
 //!     `cargo test -p surshape-app contraste -- --nocapture`).
@@ -16,123 +17,356 @@
 use eframe::egui::{
     self, epaint::Shadow, Color32, CornerRadius, FontData, FontDefinitions, FontFamily, FontId, Stroke, TextStyle,
 };
+use serde::{Deserialize, Serialize};
+use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::Arc;
 
-/// Paleta base (nombres de la especificación).
+/// Paleta "Crepúsculo de invierno" (cielo invernal de Los Ríos). Solo estos
+/// valores; el test `paleta_solo_valores_permitidos` lo exige.
 #[allow(dead_code)]
 pub mod pal {
     use eframe::egui::Color32;
     const fn c(hex: u32) -> Color32 {
         Color32::from_rgb((hex >> 16) as u8, (hex >> 8) as u8, hex as u8)
     }
-    // Azul acero
+    // Base del usuario
+    pub const AZUL_1: Color32 = c(0x29559C);
+    pub const AZUL_2: Color32 = c(0x376BBF);
+    pub const AZUL_3: Color32 = c(0x748FD2);
+    pub const LAVANDA_1: Color32 = c(0x9D96C0);
+    pub const LAVANDA_2: Color32 = c(0x9397C7);
+    // Escala oscura: #29559C con negro al 15/25/35/42/50 %. Piso: NOCHE_50.
+    pub const NOCHE_15: Color32 = c(0x234885);
+    pub const NOCHE_25: Color32 = c(0x1F4075);
+    pub const NOCHE_35: Color32 = c(0x1B3765);
+    pub const NOCHE_42: Color32 = c(0x18315A);
+    pub const NOCHE_50: Color32 = c(0x142A4E);
+    // Claros para texto (base con blanco)
+    pub const NIEVE: Color32 = c(0xEAEEF8);
+    pub const NIEVE_LAVANDA: Color32 = c(0xD4D5E9);
+    pub const NIEVE_AZUL: Color32 = c(0xC7D2ED);
+
+    /// Todos los valores permitidos.
+    pub const TODOS: [Color32; 13] = [
+        AZUL_1, AZUL_2, AZUL_3, LAVANDA_1, LAVANDA_2, NOCHE_15, NOCHE_25, NOCHE_35, NOCHE_42, NOCHE_50, NIEVE,
+        NIEVE_LAVANDA, NIEVE_AZUL,
+    ];
+}
+
+/// Paleta clásica clara (acero/celeste/turquesa), hasta la 0.9.0. Se conserva
+/// para la opción "Tema: Claro (clásico)" de Preferencias.
+#[allow(dead_code)]
+pub mod pal_clasico {
+    use eframe::egui::Color32;
+    const fn c(hex: u32) -> Color32 {
+        Color32::from_rgb((hex >> 16) as u8, (hex >> 8) as u8, hex as u8)
+    }
     pub const ACERO_1: Color32 = c(0x2887AC);
     pub const ACERO_2: Color32 = c(0x69A3C1);
     pub const ACERO_3: Color32 = c(0x93B9D2);
     pub const ACERO_4: Color32 = c(0xC5D8E5);
-    // Celeste
     pub const CELESTE_1: Color32 = c(0x47D8F9);
     pub const CELESTE_2: Color32 = c(0x70E1FE);
     pub const CELESTE_3: Color32 = c(0x9DEAFE);
     pub const CELESTE_4: Color32 = c(0xCFF6FE);
-    // Turquesa
     pub const TURQUESA_1: Color32 = c(0x2DC9C8);
     pub const TURQUESA_2: Color32 = c(0x88E1DE);
     pub const TURQUESA_3: Color32 = c(0xB4ECE9);
     pub const TURQUESA_4: Color32 = c(0xDCF6F5);
-    // Azul cielo
     pub const CIELO_1: Color32 = c(0x04B5E9);
     pub const CIELO_2: Color32 = c(0x46C5EF);
     pub const CIELO_3: Color32 = c(0x83D1F5);
     pub const CIELO_4: Color32 = c(0xC1E9FC);
-    // Texto: azul marino (nunca negro puro)
     pub const MARINO: Color32 = c(0x16323F);
-    // Fuera de la paleta pedida, por legibilidad (aprobados):
-    /// Texto secundario: marino aclarado; cumple AA en todos los fondos.
     pub const MARINO_SUAVE: Color32 = c(0x2B5468);
-    /// Advertencias y selección (Highlight clásico).
     pub const AVISO: Color32 = c(0x0B4A78);
-    /// Errores: aún más oscuro y saturado (distinto del aviso, sin rojo).
     pub const ERROR: Color32 = c(0x082F66);
     pub const BLANCO: Color32 = c(0xFFFFFF);
 }
 
-// --- Colores del sistema (Win32) ------------------------------------------------------
+// --- Temas ---------------------------------------------------------------------------
 
-/// ButtonFace / fondo de ventanas y paneles.
-pub const FACE: Color32 = pal::ACERO_4;
-/// Bisel claro (borde superior izquierdo de lo que sobresale).
-pub const LIGHT: Color32 = pal::BLANCO;
-/// Sombra del bisel.
-pub const SHADOW: Color32 = pal::ACERO_2;
-/// Sombra oscura (borde exterior inferior derecho).
-pub const DARK: Color32 = pal::MARINO;
-/// Campos editables, listas.
-pub const FIELD: Color32 = pal::BLANCO;
-/// Selección (Highlight) y su texto.
-pub const HIGHLIGHT: Color32 = pal::AVISO;
-pub const HIGHLIGHT_TEXT: Color32 = pal::BLANCO;
-/// Barras de título de páginas y diálogos: degradado y texto.
-pub const TITLE_A: Color32 = pal::AVISO;
-pub const TITLE_B: Color32 = pal::ACERO_1;
-pub const TITLE_TEXT: Color32 = pal::BLANCO;
-
-pub const TEXT: Color32 = pal::MARINO;
-pub const TEXT_MUTED: Color32 = pal::MARINO_SUAVE;
-/// Texto deshabilitado (exento de AA, como en Windows; lleva relieve blanco).
-pub const TEXT_DISABLED: Color32 = pal::ACERO_2;
-pub const WARNING: Color32 = pal::AVISO;
-pub const ERROR: Color32 = pal::ERROR;
-/// Acentos: Render y foco.
-pub const ACCENT: Color32 = pal::CIELO_1;
-pub const ACCENT_2: Color32 = pal::TURQUESA_1;
-
-// --- Visor (osciloscopio, sin negro) -------------------------------------------------
-
-pub const VIEW_BG: Color32 = pal::MARINO;
-pub const VIEW_WAVE: Color32 = pal::CELESTE_1;
-pub const VIEW_TEXT: Color32 = pal::CELESTE_3;
-pub const VIEW_CURSOR: Color32 = pal::CELESTE_4;
-/// Línea central y separación de canales.
-pub const VIEW_GRID: Color32 = pal::ACERO_1;
-/// Selección: #2887AC semitransparente.
-pub fn view_selection() -> Color32 {
-    Color32::from_rgba_unmultiplied(0x28, 0x87, 0xAC, 56)
+/// Tema elegido en Preferencias → Accesibilidad. Los tests y el modo captura
+/// usan Crepúsculo (el valor por defecto).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub enum ThemeKind {
+    #[default]
+    Crepusculo,
+    Clasico,
 }
-/// Marcadores de la fuente.
-pub const VIEW_MARKER: Color32 = pal::CIELO_2;
-/// Bucle de la celda (marca turquesa).
-pub const VIEW_LOOP: Color32 = pal::TURQUESA_1;
 
-/// Gradiente del espectrograma, de silencio a máximo.
-pub const SPECTRO: [Color32; 5] = [pal::MARINO, pal::ACERO_1, pal::CIELO_1, pal::CELESTE_1, pal::CELESTE_4];
+impl ThemeKind {
+    pub const ALL: [ThemeKind; 2] = [ThemeKind::Crepusculo, ThemeKind::Clasico];
+    pub fn key(self) -> &'static str {
+        match self {
+            ThemeKind::Crepusculo => "ui.prefs.tema_crepusculo",
+            ThemeKind::Clasico => "ui.prefs.tema_clasico",
+        }
+    }
+}
 
-/// Color del espectrograma para un valor 0..1 (gradiente [`SPECTRO`]).
+static KIND: AtomicU8 = AtomicU8::new(0);
+
+/// Cambia el tema activo (luego hay que llamar a [`apply`]).
+pub fn set(kind: ThemeKind) {
+    KIND.store(kind as u8, Ordering::Relaxed);
+}
+
+pub fn kind() -> ThemeKind {
+    if KIND.load(Ordering::Relaxed) == ThemeKind::Clasico as u8 { ThemeKind::Clasico } else { ThemeKind::Crepusculo }
+}
+
+/// Colores del tema activo.
+pub fn t() -> &'static Theme {
+    match kind() {
+        ThemeKind::Crepusculo => &CREPUSCULO,
+        ThemeKind::Clasico => &CLASICO,
+    }
+}
+
+/// Colores de la interfaz con nombres semánticos (los del sistema Win32 y los
+/// propios de SURSHAPE). En mayúsculas porque antes eran constantes.
+#[allow(non_snake_case)]
+pub struct Theme {
+    /// egui parte de `Visuals::dark()` o de `Visuals::light()`.
+    pub dark_base: bool,
+    /// ButtonFace / fondo de ventanas.
+    pub FACE: Color32,
+    /// Paneles y barra lateral.
+    pub PANEL: Color32,
+    /// Bisel claro (borde superior izquierdo de lo que sobresale).
+    pub LIGHT: Color32,
+    /// Sombra del bisel.
+    pub SHADOW: Color32,
+    /// Sombra oscura (borde exterior). Nunca negro.
+    pub DARK: Color32,
+    /// Borde superior izquierdo de lo hundido (campos, radios).
+    pub SUNKEN_EDGE: Color32,
+    /// Campos editables (hundidos), listas.
+    pub FIELD: Color32,
+    /// Selección (Highlight) y su texto.
+    pub HIGHLIGHT: Color32,
+    pub HIGHLIGHT_TEXT: Color32,
+    /// Barras de título de páginas y diálogos: degradado y texto.
+    pub TITLE_A: Color32,
+    pub TITLE_B: Color32,
+    pub TITLE_TEXT: Color32,
+    pub TEXT: Color32,
+    pub TEXT_MUTED: Color32,
+    /// Texto en lavanda: solo sobre FIELD o FACE.
+    #[allow(dead_code)]
+    pub TEXT_LAVENDER: Color32,
+    /// Texto deshabilitado (exento de AA, como en Windows).
+    pub TEXT_DISABLED: Color32,
+    /// Aviso: texto con ícono propio.
+    pub WARNING: Color32,
+    /// Error: texto sobre franja `ERROR_BG`, con ícono de error.
+    pub ERROR: Color32,
+    pub ERROR_BG: Color32,
+    /// Acentos: Render, foco, hot-tracking de la toolbar.
+    pub ACCENT: Color32,
+    pub ACCENT_2: Color32,
+    /// Botón de toolbar "encendido": cara aclarada.
+    pub BUTTON_ON: Color32,
+    /// Canal de las barras de desplazamiento.
+    pub SCROLL_TRACK: Color32,
+    /// Íconos 16x16: acento y carpeta.
+    pub ICON_ACCENT: Color32,
+    pub ICON_FOLDER: Color32,
+    /// Ícono de la ventana.
+    pub APP_ICON_BG: Color32,
+    pub APP_ICON_FG: Color32,
+    /// Visor.
+    pub VIEW_BG: Color32,
+    pub VIEW_WAVE: Color32,
+    pub VIEW_TEXT: Color32,
+    pub VIEW_CURSOR: Color32,
+    /// Regla, línea central y separación de canales.
+    pub VIEW_GRID: Color32,
+    /// Marcadores de la fuente.
+    pub VIEW_MARKER: Color32,
+    /// Bucle de la celda.
+    pub VIEW_LOOP: Color32,
+    /// Etiquetas de frecuencia del espectrograma.
+    pub SPECTRO_AXIS_TEXT: Color32,
+    pub SPECTRO_AXIS_BG: Color32,
+    /// Gradiente del espectrograma, de silencio a máximo.
+    pub SPECTRO: &'static [Color32],
+    /// Encabezados de las secciones de la barra lateral y su texto.
+    pub SIDE_HEADS: [Color32; 4],
+    pub SIDE_HEAD_TEXT: [Color32; 4],
+    pub GRID_HEAD: Color32,
+    /// Celda con contenido.
+    pub GRID_CELL: Color32,
+    /// Celda vacía / alterna.
+    pub GRID_EMPTY: Color32,
+    /// Columna 0 (fuentes, generadores, mezclas, referencias).
+    pub GRID_COL0: Color32,
+    /// Líneas de la grilla (decorativas).
+    pub GRID_LINE: Color32,
+    /// Celda que es entrada 2 de la elegida / celda bajo el puntero al elegir.
+    pub GRID_MARK: Color32,
+    /// Borde de foco de la celda elegida.
+    pub GRID_FOCUS: Color32,
+    /// Bases de los colores semitransparentes.
+    pub DROP_BASE: Color32,
+    pub BACKDROP_BASE: Color32,
+    pub GHOST_BASE: Color32,
+    pub VIEW_SEL_BASE: Color32,
+}
+
+/// "Crepúsculo de invierno" (por defecto). Asignación aprobada en la 0.9.1.
+pub static CREPUSCULO: Theme = {
+    use pal::*;
+    Theme {
+        dark_base: true,
+        FACE: NOCHE_42,
+        PANEL: NOCHE_35,
+        // Bisel claro #748FD2 y no #376BBF: con #376BBF el relieve daba 2,47:1
+        // contra la cara y los botones se veían planos.
+        LIGHT: AZUL_3,
+        SHADOW: NOCHE_50,
+        DARK: NOCHE_50,
+        // El piso (#142A4E) no se ve sobre la cara: lo hundido lleva #376BBF
+        // arriba a la izquierda y #748FD2 abajo a la derecha.
+        SUNKEN_EDGE: AZUL_2,
+        FIELD: NOCHE_50,
+        HIGHLIGHT: AZUL_1,
+        HIGHLIGHT_TEXT: NIEVE,
+        TITLE_A: NOCHE_35,
+        TITLE_B: AZUL_2,
+        TITLE_TEXT: NIEVE,
+        TEXT: NIEVE,
+        TEXT_MUTED: NIEVE_LAVANDA,
+        TEXT_LAVENDER: LAVANDA_1,
+        TEXT_DISABLED: AZUL_3,
+        WARNING: NIEVE_LAVANDA,
+        ERROR: NIEVE,
+        ERROR_BG: AZUL_1,
+        ACCENT: AZUL_3,
+        ACCENT_2: LAVANDA_1,
+        BUTTON_ON: NOCHE_15,
+        SCROLL_TRACK: NOCHE_50,
+        ICON_ACCENT: AZUL_3,
+        ICON_FOLDER: LAVANDA_1,
+        APP_ICON_BG: AZUL_1,
+        APP_ICON_FG: NIEVE,
+        VIEW_BG: NOCHE_50,
+        VIEW_WAVE: LAVANDA_1,
+        VIEW_TEXT: NIEVE_LAVANDA,
+        VIEW_CURSOR: NIEVE,
+        VIEW_GRID: NOCHE_15,
+        VIEW_MARKER: AZUL_3,
+        VIEW_LOOP: LAVANDA_2,
+        SPECTRO_AXIS_TEXT: NIEVE,
+        SPECTRO_AXIS_BG: NOCHE_50,
+        SPECTRO: &[NOCHE_50, AZUL_1, AZUL_2, AZUL_3, LAVANDA_1, NIEVE],
+        // El cuarto es #C7D2ED y no #748FD2: con texto #142A4E daba 4,49:1.
+        SIDE_HEADS: [AZUL_1, AZUL_2, LAVANDA_1, NIEVE_AZUL],
+        SIDE_HEAD_TEXT: [NIEVE, NIEVE, NOCHE_50, NOCHE_50],
+        GRID_HEAD: NOCHE_42,
+        GRID_CELL: NOCHE_35,
+        GRID_EMPTY: NOCHE_42,
+        GRID_COL0: NOCHE_25,
+        GRID_LINE: NOCHE_15,
+        GRID_MARK: NOCHE_15,
+        GRID_FOCUS: LAVANDA_1,
+        DROP_BASE: AZUL_1,
+        BACKDROP_BASE: NOCHE_50,
+        GHOST_BASE: LAVANDA_1,
+        VIEW_SEL_BASE: AZUL_2,
+    }
+};
+
+/// "Claro (clásico)": la paleta acero/celeste/turquesa hasta la 0.9.0.
+pub static CLASICO: Theme = {
+    use pal_clasico::*;
+    Theme {
+        dark_base: false,
+        FACE: ACERO_4,
+        PANEL: ACERO_4,
+        LIGHT: BLANCO,
+        SHADOW: ACERO_2,
+        DARK: MARINO,
+        SUNKEN_EDGE: ACERO_2,
+        FIELD: BLANCO,
+        HIGHLIGHT: AVISO,
+        HIGHLIGHT_TEXT: BLANCO,
+        TITLE_A: AVISO,
+        TITLE_B: ACERO_1,
+        TITLE_TEXT: BLANCO,
+        TEXT: MARINO,
+        TEXT_MUTED: MARINO_SUAVE,
+        TEXT_LAVENDER: MARINO_SUAVE,
+        TEXT_DISABLED: ACERO_2,
+        WARNING: AVISO,
+        ERROR: ERROR,
+        ERROR_BG: ACERO_4,
+        // #2887AC y no #04B5E9: la línea de envolvente sobre blanco daba 2,3:1.
+        ACCENT: ACERO_1,
+        ACCENT_2: TURQUESA_1,
+        BUTTON_ON: TURQUESA_4,
+        SCROLL_TRACK: TURQUESA_4,
+        ICON_ACCENT: ACERO_1,
+        ICON_FOLDER: CIELO_3,
+        APP_ICON_BG: ACERO_1,
+        APP_ICON_FG: CELESTE_4,
+        VIEW_BG: MARINO,
+        VIEW_WAVE: CELESTE_1,
+        VIEW_TEXT: CELESTE_3,
+        VIEW_CURSOR: CELESTE_4,
+        VIEW_GRID: ACERO_1,
+        VIEW_MARKER: CIELO_2,
+        VIEW_LOOP: TURQUESA_1,
+        SPECTRO_AXIS_TEXT: CELESTE_4,
+        SPECTRO_AXIS_BG: MARINO,
+        SPECTRO: &[MARINO, ACERO_1, CIELO_1, CELESTE_1, CELESTE_4],
+        SIDE_HEADS: [ACERO_2, CELESTE_2, TURQUESA_2, CIELO_2],
+        SIDE_HEAD_TEXT: [MARINO, MARINO, MARINO, MARINO],
+        GRID_HEAD: ACERO_4,
+        GRID_CELL: BLANCO,
+        GRID_EMPTY: TURQUESA_4,
+        GRID_COL0: TURQUESA_3,
+        GRID_LINE: ACERO_3,
+        GRID_MARK: CELESTE_3,
+        GRID_FOCUS: MARINO,
+        DROP_BASE: AVISO,
+        BACKDROP_BASE: MARINO,
+        GHOST_BASE: CELESTE_1,
+        VIEW_SEL_BASE: ACERO_1,
+    }
+};
+
+fn with_alpha(c: Color32, a: u8) -> Color32 {
+    Color32::from_rgba_unmultiplied(c.r(), c.g(), c.b(), a)
+}
+/// Capa al soltar archivos.
+pub fn drop_overlay() -> Color32 {
+    with_alpha(t().DROP_BASE, 90)
+}
+/// Fondo detrás de los diálogos modales.
+pub fn modal_backdrop() -> Color32 {
+    with_alpha(t().BACKDROP_BASE, 90)
+}
+/// Onda de referencia bajo el editor de envolventes.
+pub fn bp_ghost() -> Color32 {
+    with_alpha(t().GHOST_BASE, 60)
+}
+/// Selección del visor.
+pub fn view_selection() -> Color32 {
+    with_alpha(t().VIEW_SEL_BASE, 56)
+}
+
+/// Color del espectrograma para un valor 0..1 (gradiente `SPECTRO`).
 pub fn spectro_color(v: f32) -> Color32 {
-    let x = v.clamp(0.0, 1.0) * (SPECTRO.len() - 1) as f32;
-    let i = (x.floor() as usize).min(SPECTRO.len() - 2);
+    let s = t().SPECTRO;
+    let x = v.clamp(0.0, 1.0) * (s.len() - 1) as f32;
+    let i = (x.floor() as usize).min(s.len() - 2);
     let f = x - i as f32;
-    let (a, b) = (SPECTRO[i], SPECTRO[i + 1]);
+    let (a, b) = (s[i], s[i + 1]);
     let mix = |p: u8, q: u8| (p as f32 + (q as f32 - p as f32) * f).round() as u8;
     Color32::from_rgb(mix(a.r(), b.r()), mix(a.g(), b.g()), mix(a.b(), b.b()))
 }
-
-// --- Barra lateral y grilla ------------------------------------------------------------
-
-/// Encabezados de las secciones de la barra lateral, uno por sección.
-pub const SIDE_HEADS: [Color32; 4] = [pal::ACERO_2, pal::CELESTE_2, pal::TURQUESA_2, pal::CIELO_2];
-
-pub const GRID_HEAD: Color32 = FACE;
-/// Celda con contenido.
-pub const GRID_CELL: Color32 = pal::BLANCO;
-/// Celda vacía.
-pub const GRID_EMPTY: Color32 = pal::TURQUESA_4;
-/// Columna 0 (fuentes, generadores, mezclas, referencias).
-pub const GRID_COL0: Color32 = pal::TURQUESA_3;
-/// Líneas de la grilla (decorativas: 2,08:1, aprobado).
-pub const GRID_LINE: Color32 = pal::ACERO_3;
-/// Celda que es entrada 2 de la elegida / celda bajo el puntero al elegir.
-pub const GRID_MARK: Color32 = pal::CELESTE_3;
 
 /// Mezcla dos colores (0 = a, 1 = b).
 #[cfg_attr(not(test), allow(dead_code))]
@@ -233,10 +467,11 @@ pub fn apply(ctx: &egui::Context) {
     // Siempre el tema propio, aunque Windows esté en modo oscuro. Sin
     // animaciones (Win32 clásico).
     ctx.options_mut(|o| {
-        o.theme_preference = egui::ThemePreference::Light;
+        o.theme_preference = if t().dark_base { egui::ThemePreference::Dark } else { egui::ThemePreference::Light };
         o.zoom_with_keyboard = false;
     });
-    ctx.style_mut_of(egui::Theme::Light, |s| {
+    let base = if t().dark_base { egui::Theme::Dark } else { egui::Theme::Light };
+    ctx.style_mut_of(base, |s| {
         s.text_styles = [
             (TextStyle::Heading, bold_font(13.0)),
             (TextStyle::Body, body_font(UI_SIZE)),
@@ -272,46 +507,45 @@ pub fn apply(ctx: &egui::Context) {
         };
         s.interaction.tooltip_delay = 0.4;
 
+        let th = t();
         let v = &mut s.visuals;
-        *v = egui::Visuals::light();
-        v.override_text_color = Some(TEXT);
-        v.panel_fill = FACE;
-        v.window_fill = FACE;
-        v.window_stroke = Stroke::new(1.0_f32, DARK);
+        *v = if th.dark_base { egui::Visuals::dark() } else { egui::Visuals::light() };
+        v.override_text_color = Some(th.TEXT);
+        v.panel_fill = th.PANEL;
+        v.window_fill = th.FACE;
+        v.window_stroke = Stroke::new(1.0_f32, th.DARK);
         v.window_shadow = Shadow::NONE;
         v.popup_shadow = Shadow::NONE;
         v.window_corner_radius = CornerRadius::ZERO;
         v.menu_corner_radius = CornerRadius::ZERO;
-        v.extreme_bg_color = FIELD;
-        v.faint_bg_color = pal::TURQUESA_4;
-        v.code_bg_color = FIELD;
-        v.hyperlink_color = HIGHLIGHT;
-        v.warn_fg_color = WARNING;
-        v.error_fg_color = ERROR;
-        v.selection.bg_fill = HIGHLIGHT;
-        v.selection.stroke = Stroke::new(1.0_f32, HIGHLIGHT_TEXT);
-        v.text_cursor.stroke = Stroke::new(1.0_f32, TEXT);
+        v.extreme_bg_color = th.FIELD;
+        v.faint_bg_color = th.GRID_EMPTY;
+        v.code_bg_color = th.FIELD;
+        v.hyperlink_color = th.HIGHLIGHT;
+        v.warn_fg_color = th.WARNING;
+        v.error_fg_color = th.ERROR;
+        v.selection.bg_fill = th.HIGHLIGHT;
+        v.selection.stroke = Stroke::new(1.0_f32, th.HIGHLIGHT_TEXT);
+        v.text_cursor.stroke = Stroke::new(1.0_f32, th.TEXT);
         v.slider_trailing_fill = false;
         v.striped = false;
         v.button_frame = true;
         v.collapsing_header_frame = false;
         v.handle_shape = egui::style::HandleShape::Rect { aspect_ratio: 0.5 };
         for (w, fill, stroke) in [
-            (&mut v.widgets.noninteractive, FACE, Stroke::new(1.0_f32, SHADOW)),
-            (&mut v.widgets.inactive, FACE, Stroke::new(1.0_f32, DARK)),
-            (&mut v.widgets.hovered, FACE, Stroke::new(1.0_f32, DARK)),
-            (&mut v.widgets.active, FACE, Stroke::new(1.0_f32, DARK)),
-            (&mut v.widgets.open, FACE, Stroke::new(1.0_f32, DARK)),
+            (&mut v.widgets.noninteractive, th.FACE, Stroke::new(1.0_f32, th.SHADOW)),
+            (&mut v.widgets.inactive, th.FACE, Stroke::new(1.0_f32, th.LIGHT)),
+            (&mut v.widgets.hovered, th.FACE, Stroke::new(1.0_f32, th.ACCENT)),
+            (&mut v.widgets.active, th.BUTTON_ON, Stroke::new(1.0_f32, th.ACCENT)),
+            (&mut v.widgets.open, th.FACE, Stroke::new(1.0_f32, th.LIGHT)),
         ] {
             w.bg_fill = fill;
             w.weak_bg_fill = fill;
             w.bg_stroke = stroke;
-            w.fg_stroke = Stroke::new(1.0_f32, TEXT);
+            w.fg_stroke = Stroke::new(1.0_f32, th.TEXT);
             w.corner_radius = CornerRadius::ZERO;
             w.expansion = 0.0;
         }
-        // Scrollbars: canal claro, botón con color de cara.
-        v.extreme_bg_color = FIELD;
     });
 }
 
@@ -348,84 +582,152 @@ pub(crate) mod tests {
         Color32::from_rgb(m(fg.r(), bg.r()), m(fg.g(), bg.g()), m(fg.b(), bg.b()))
     }
 
+    fn themes() -> [(&'static str, &'static Theme); 2] {
+        [("crepusculo", &CREPUSCULO), ("clasico", &CLASICO)]
+    }
+
+    fn sel_over(th: &Theme) -> Color32 {
+        over(with_alpha(th.VIEW_SEL_BASE, 56), th.VIEW_BG)
+    }
+
     /// Todos los pares texto/fondo que usa la interfaz: (uso, texto, fondo).
-    pub fn text_pairs() -> Vec<(&'static str, Color32, Color32)> {
+    pub fn text_pairs(th: &Theme) -> Vec<(&'static str, Color32, Color32)> {
         let mut v = Vec::new();
         for (bg_name, bg) in [
-            ("cara", FACE),
-            ("campo", FIELD),
-            ("celda", GRID_CELL),
-            ("celda_vacia", GRID_EMPTY),
-            ("columna0", GRID_COL0),
-            ("marca", GRID_MARK),
-            ("lateral1", SIDE_HEADS[0]),
-            ("lateral2", SIDE_HEADS[1]),
-            ("lateral3", SIDE_HEADS[2]),
-            ("lateral4", SIDE_HEADS[3]),
-            ("acento", ACCENT),
-            ("acento2", ACCENT_2),
+            ("cara", th.FACE),
+            ("panel", th.PANEL),
+            ("campo", th.FIELD),
+            ("celda", th.GRID_CELL),
+            ("celda_vacia", th.GRID_EMPTY),
+            ("columna0", th.GRID_COL0),
+            ("marca", th.GRID_MARK),
+            ("boton_on", th.BUTTON_ON),
         ] {
-            v.push((bg_name, TEXT, bg));
+            v.push((bg_name, th.TEXT, bg));
+            v.push((bg_name, th.TEXT_MUTED, bg));
         }
-        for (bg_name, bg) in [("cara", FACE), ("campo", FIELD), ("celda_vacia", GRID_EMPTY), ("columna0", GRID_COL0)] {
-            v.push((bg_name, TEXT_MUTED, bg));
+        for (i, (bg, fg)) in th.SIDE_HEADS.iter().zip(th.SIDE_HEAD_TEXT.iter()).enumerate() {
+            v.push((["lateral1", "lateral2", "lateral3", "lateral4"][i], *fg, *bg));
         }
-        for bg in [FACE, FIELD] {
-            v.push(("aviso", WARNING, bg));
-            v.push(("error", ERROR, bg));
+        v.push(("lavanda/campo", th.TEXT_LAVENDER, th.FIELD));
+        v.push(("lavanda/cara", th.TEXT_LAVENDER, th.FACE));
+        for bg in [th.FACE, th.PANEL, th.FIELD] {
+            v.push(("aviso", th.WARNING, bg));
         }
-        v.push(("seleccion", HIGHLIGHT_TEXT, HIGHLIGHT));
+        v.push(("error", th.ERROR, th.ERROR_BG));
+        v.push(("seleccion", th.HIGHLIGHT_TEXT, th.HIGHLIGHT));
         // Barra de título: el texto va a la izquierda, sobre el primer 40 %
         // del degradado (hasta ahí lo verifica este par).
-        v.push(("titulo_inicio", TITLE_TEXT, TITLE_A));
-        v.push(("titulo_40", TITLE_TEXT, lerp(TITLE_A, TITLE_B, 0.4)));
-        // Visor oscuro
-        v.push(("visor_lectura", VIEW_TEXT, VIEW_BG));
-        v.push(("visor_cursor", VIEW_CURSOR, VIEW_BG));
-        v.push(("visor_sel", VIEW_TEXT, over(view_selection(), VIEW_BG)));
-        v.push(("eje_espectro", pal::CELESTE_4, pal::MARINO));
+        v.push(("titulo_inicio", th.TITLE_TEXT, th.TITLE_A));
+        v.push(("titulo_40", th.TITLE_TEXT, lerp(th.TITLE_A, th.TITLE_B, 0.4)));
+        v.push(("visor_lectura", th.VIEW_TEXT, th.VIEW_BG));
+        v.push(("visor_cursor", th.VIEW_CURSOR, th.VIEW_BG));
+        v.push(("visor_sel", th.VIEW_TEXT, sel_over(th)));
+        v.push(("eje_espectro", th.SPECTRO_AXIS_TEXT, th.SPECTRO_AXIS_BG));
         v
+    }
+
+    /// Gráficos y bordes funcionales (WCAG 1.4.11, >= 3:1): (uso, color, fondo).
+    pub fn graphic_pairs(th: &Theme) -> Vec<(&'static str, Color32, Color32)> {
+        vec![
+            ("onda", th.VIEW_WAVE, th.VIEW_BG),
+            ("cursor", th.VIEW_CURSOR, th.VIEW_BG),
+            ("marcador", th.VIEW_MARKER, th.VIEW_BG),
+            ("bucle", th.VIEW_LOOP, th.VIEW_BG),
+            ("acento/campo", th.ACCENT, th.FIELD),
+            ("acento/celda", th.ACCENT, th.GRID_CELL),
+            ("foco/celda", th.GRID_FOCUS, th.GRID_CELL),
+            ("foco/vacia", th.GRID_FOCUS, th.GRID_EMPTY),
+            ("borde_ctrl", if th.dark_base { th.LIGHT } else { th.DARK }, th.FACE),
+            ("tinta_icono", th.TEXT, th.FACE),
+        ]
+    }
+
+    /// Pares decorativos (sin mínimo): se imprimen para el registro.
+    pub fn decorative_pairs(th: &Theme) -> Vec<(&'static str, Color32, Color32)> {
+        vec![
+            ("bisel/cara", th.LIGHT, th.FACE),
+            ("bisel/sombra", th.LIGHT, th.SHADOW),
+            ("hundido/cara", th.SUNKEN_EDGE, th.FACE),
+            ("campo/cara", th.FIELD, th.FACE),
+            ("linea_grilla", th.GRID_LINE, th.GRID_CELL),
+            ("regla_visor", th.VIEW_GRID, th.VIEW_BG),
+            ("foco/seleccion", th.GRID_FOCUS, th.HIGHLIGHT),
+            ("icono/cara", th.ICON_ACCENT, th.FACE),
+            ("carpeta/cara", th.ICON_FOLDER, th.FACE),
+            ("deshab/campo", th.TEXT_DISABLED, th.FIELD),
+            ("deshab/cara", th.TEXT_DISABLED, th.FACE),
+        ]
     }
 
     fn hex(c: Color32) -> String {
         format!("#{:02X}{:02X}{:02X}", c.r(), c.g(), c.b())
     }
 
+    fn check(title: &str, pairs: Vec<(&'static str, Color32, Color32)>, min: f64) -> Vec<String> {
+        let mut fails = Vec::new();
+        println!("-- {title}");
+        println!("{:<16} {:>8} {:>8} {:>7}", "uso", "color", "fondo", "ratio");
+        for (name, fg, bg) in pairs {
+            let r = contrast(fg, bg);
+            println!("{:<16} {:>8} {:>8} {:>7.2}", name, hex(fg), hex(bg), r);
+            if r < min {
+                fails.push(format!("{title} {name}: {} sobre {} = {r:.2}", hex(fg), hex(bg)));
+            }
+        }
+        fails
+    }
+
     #[test]
     fn contraste_text_pairs_meet_wcag_aa() {
         let mut fails = Vec::new();
-        println!("{:<14} {:>8} {:>8} {:>7}", "uso", "texto", "fondo", "ratio");
-        for (name, fg, bg) in text_pairs() {
-            let r = contrast(fg, bg);
-            println!("{:<14} {:>8} {:>8} {:>7.2}", name, hex(fg), hex(bg), r);
-            if r < 4.5 {
-                fails.push(format!("{name}: {} sobre {} = {r:.2}", hex(fg), hex(bg)));
-            }
+        for (name, th) in themes() {
+            println!("==== tema {name}");
+            fails.extend(check("texto (>= 4,5:1)", text_pairs(th), 4.5));
+            fails.extend(check("graficos y bordes funcionales (>= 3:1)", graphic_pairs(th), 3.0));
+            let _ = check("decorativos y deshabilitado (sin minimo)", decorative_pairs(th), 0.0);
         }
-        assert!(fails.is_empty(), "pares bajo 4,5:1: {fails:?}");
+        assert!(fails.is_empty(), "pares bajo el minimo: {fails:?}");
+    }
+
+    fn all_colors(th: &Theme) -> Vec<Color32> {
+        let mut v = vec![
+            th.FACE, th.PANEL, th.LIGHT, th.SHADOW, th.DARK, th.SUNKEN_EDGE, th.FIELD, th.HIGHLIGHT, th.HIGHLIGHT_TEXT,
+            th.TITLE_A, th.TITLE_B, th.TITLE_TEXT, th.TEXT, th.TEXT_MUTED, th.TEXT_LAVENDER, th.TEXT_DISABLED,
+            th.WARNING, th.ERROR, th.ERROR_BG, th.ACCENT, th.ACCENT_2, th.BUTTON_ON, th.SCROLL_TRACK, th.ICON_ACCENT,
+            th.ICON_FOLDER, th.APP_ICON_BG, th.APP_ICON_FG, th.VIEW_BG, th.VIEW_WAVE, th.VIEW_TEXT, th.VIEW_CURSOR,
+            th.VIEW_GRID, th.VIEW_MARKER, th.VIEW_LOOP, th.SPECTRO_AXIS_TEXT, th.SPECTRO_AXIS_BG, th.GRID_HEAD,
+            th.GRID_CELL, th.GRID_EMPTY, th.GRID_COL0, th.GRID_LINE, th.GRID_MARK, th.GRID_FOCUS, th.DROP_BASE,
+            th.BACKDROP_BASE, th.GHOST_BASE, th.VIEW_SEL_BASE,
+        ];
+        v.extend_from_slice(th.SPECTRO);
+        v.extend(th.SIDE_HEADS);
+        v.extend(th.SIDE_HEAD_TEXT);
+        v
+    }
+
+    #[test]
+    fn paleta_solo_valores_permitidos() {
+        let piso = luminance(pal::NOCHE_50);
+        for c in all_colors(&CREPUSCULO) {
+            assert!(pal::TODOS.contains(&c), "color fuera de la paleta: {}", hex(c));
+            assert!(luminance(c) >= piso, "más oscuro que el piso #142A4E: {}", hex(c));
+        }
     }
 
     #[test]
     fn no_black_no_red() {
-        let all = [
-            FACE, LIGHT, SHADOW, DARK, FIELD, HIGHLIGHT, TITLE_A, TITLE_B, TEXT, TEXT_MUTED, TEXT_DISABLED, WARNING, ERROR,
-            ACCENT, ACCENT_2, VIEW_BG, VIEW_WAVE, VIEW_TEXT, VIEW_CURSOR, VIEW_GRID, VIEW_LOOP, GRID_CELL, GRID_EMPTY,
-            GRID_COL0, GRID_LINE, GRID_MARK,
-        ];
-        for c in all.iter().chain(SPECTRO.iter()).chain(SIDE_HEADS.iter()) {
-            assert!(luminance(*c) > 0.01, "demasiado cerca del negro: {}", hex(*c));
-            // "rojo": el canal rojo domina claramente a verde y azul
-            assert!(!(c.r() > c.g().saturating_add(40) && c.r() > c.b().saturating_add(40)), "rojizo: {}", hex(*c));
+        for (_, th) in themes() {
+            for c in all_colors(th) {
+                assert!(luminance(c) > 0.01, "demasiado cerca del negro: {}", hex(c));
+                // "rojo": el canal rojo domina claramente a verde y azul
+                assert!(!(c.r() > c.g().saturating_add(40) && c.r() > c.b().saturating_add(40)), "rojizo: {}", hex(c));
+            }
         }
     }
 
     #[test]
-    fn graphics_are_visible() {
-        // Elementos gráficos (no texto): WCAG 1.4.11 pide >= 3:1.
-        assert!(contrast(VIEW_WAVE, VIEW_BG) >= 3.0, "{}", contrast(VIEW_WAVE, VIEW_BG));
-        assert!(contrast(VIEW_CURSOR, VIEW_BG) >= 3.0);
-        // El borde de los controles lo marca la sombra oscura.
-        assert!(contrast(DARK, FACE) >= 3.0);
-        assert!(contrast(DARK, FIELD) >= 3.0);
+    fn crepusculo_por_defecto() {
+        assert_eq!(ThemeKind::default(), ThemeKind::Crepusculo);
     }
 }
